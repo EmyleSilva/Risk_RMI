@@ -1,5 +1,6 @@
 package com.RiskRmi.client;
 
+import com.RiskRmi.Rmi.ClientCallback;
 import com.RiskRmi.Rmi.GameService;
 
 import java.net.MalformedURLException;
@@ -25,17 +26,22 @@ public class client {
             nomeJogador = input.nextLine();
 
             risk = (GameService) Naming.lookup(name);
+
+            /** Cria um objeto de callback e o envia para registro no servidor */
+            ClientCallback callback = new ClientCallbackImpl();
+            risk.registrarCliente(callback);
+
+            /** Registra um novo jogador */
             jogadorId = risk.registrarJogador(nomeJogador);
             System.out.println("Bem Vindo ao Risk," + nomeJogador + "! Seu id é: " + jogadorId);
 
             user = new UserCLI(risk, jogadorId);
 
-            if (risk.aguardandoJogadores()) user.aguardandoJogador();
-            while(risk.aguardandoJogadores()) {}
+            Thread.sleep(3000);
 
 //            user.controladorJogo();
 
-        }catch (RemoteException | NotBoundException | MalformedURLException e) {
+        }catch (RemoteException | NotBoundException | MalformedURLException | InterruptedException e) {
             System.out.println(e.getMessage());
         }
     }

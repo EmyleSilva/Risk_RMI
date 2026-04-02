@@ -1,5 +1,6 @@
 package com.RiskRmi.server;
 
+import com.RiskRmi.Rmi.ClientCallback;
 import com.RiskRmi.Rmi.GameService;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.Jogador;
@@ -9,13 +10,23 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GameServiceImpl extends UnicastRemoteObject implements GameService {
+public class GameServiceImpl extends UnicastRemoteObject implements GameService  {
 
-    private GameManager manager = new GameManager(30);
+    private GameManager manager;
+    private List<ClientCallback> clientes;
 
     protected GameServiceImpl() throws RemoteException {
         super();
+        clientes = new ArrayList<>();
+        manager = new GameManager(30, clientes);
+    }
+
+    @Override
+    public void registrarCliente(ClientCallback cliente) throws RemoteException {
+        manager.registrarCliente(cliente);
     }
 
     @Override
@@ -25,13 +36,8 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         jogador.setId(manager.getJogadores().indexOf(jogador)+1);
         System.out.println("Jogador Conectado: " + nome);
 
-        manager.verificarInicioJogo();
+        manager.verificarInicioJogo(clientes);
         return jogador.getId();
-    }
-
-    @Override
-    public Boolean aguardandoJogadores() throws RemoteException {
-        return manager.verificarAguardandoJogadores();
     }
 
     public static void main(String[] args) {

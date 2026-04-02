@@ -1,11 +1,13 @@
 package com.RiskRmi.server;
 
+import com.RiskRmi.Rmi.ClientCallback;
 import com.RiskRmi.enuns.FasesJogo;
 import com.RiskRmi.enuns.Territorios;
 import com.RiskRmi.enuns.TipoCarta;
 import com.RiskRmi.enuns.TipoTropa;
 import com.RiskRmi.model.*;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class GameManager {
@@ -22,13 +24,35 @@ public class GameManager {
     private final int TAMANHO_BARALHO;
     private Dado dado;
     private Boolean jogoIniciado = false;
-    private final int MIN_JOGADORES = 3;
+    private final int MIN_JOGADORES = 2;
+    private List<ClientCallback> clientes;
+    private NotificacoesCallback notificador;
 
-    public GameManager(int TAMANHO_BARALHO) {
+
+    public GameManager(int TAMANHO_BARALHO, List<ClientCallback> clientes) {
         this.TAMANHO_BARALHO = TAMANHO_BARALHO;
         this.dado = new Dado();
         this.jogadores = new ArrayList<>();
+        this.clientes = clientes;
+        this.notificador = new NotificacoesCallback();
+    }
 
+    /**
+     * Registra um novo cliente no servidor.
+     * @param cliente Novo cliente.
+     * */
+    public void registrarCliente(ClientCallback cliente) {
+        clientes.add(cliente);
+        System.out.println("Novo cliente registrado.\n");
+    }
+
+    /**
+     * Remove um cliente do servidor (para evitar erros caso o cliente caia)
+     * @param cliente Cliente a ser removido.
+     * */
+    public void removerCliente(ClientCallback cliente) {
+        clientes.remove(cliente);
+        System.out.println("Cliente removido da lista!\n");
     }
 
     /**
@@ -36,11 +60,14 @@ public class GameManager {
      * é antigida.
      * Além disso, inicia o processo de criação do jogo através da chamada do metodo criarJogo()
      * */
-    public void verificarInicioJogo() {
+    public void verificarInicioJogo(List<ClientCallback> clientes) {
         if (this.jogadores.size() >= MIN_JOGADORES && !jogoIniciado) {
-            criarJogo();
+            criarJogo(clientes);
             jogoIniciado = true;
             System.out.println("Jogo Iniciado!");
+            notificador.callback(clientes, notificador.jogoIniciado());
+        }else {
+            notificador.callback(clientes, notificador.aguardandoJogadores());
         }
     }
 
@@ -53,7 +80,7 @@ public class GameManager {
      * Também é responsável por distribuir os territórios entre os jogadores conectados e definir a quantidade de
      * tropas iniciais de cada um.
      * */
-    public void criarJogo() {
+    public void criarJogo(List<ClientCallback> clientes) {
           criarTropas();
           criarTerritorios();
           criarContinentes();
@@ -69,6 +96,7 @@ public class GameManager {
         }
 
         System.out.println("ID do Jogador Atual: " + jogadores.get(jogadorAtualIndex).getId());
+
     }
 
     /**
@@ -252,16 +280,6 @@ public class GameManager {
      *            MÉTODOS DE CONTROLE DO JOGO
      *******************************************************/
 
-
-    /**
-     * Verifica se o jogo está em fase de aguardar jogador (quando o mínimo de
-     * jogadores ainda não foi atingido)
-     *
-     * @return true quando está aguardando, false quando jogo é iniciado.
-     * */
-    Boolean verificarAguardandoJogadores() {
-        return !jogoIniciado;
-    }
 
     /*******************************************************
      *            MÉTODOS AUXILIARES

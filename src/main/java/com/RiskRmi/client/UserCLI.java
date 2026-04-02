@@ -21,16 +21,6 @@ public class UserCLI {
         this.jogadorId = jogadorId;
     }
 
-    public void aguardandoJogador() {
-        System.out.println("======================================================================");
-        System.out.println("=                                                                    =");
-        System.out.println("=                                                                    =");
-        System.out.println("=            AGUARDANDO JOGADOR(ES) PARA INICIAR A PARTIDA           =");
-        System.out.println("=                                                                    =");
-        System.out.println("=                                                                    =");
-        System.out.println("======================================================================");
-    }
-
 //    public void controladorJogo() throws RemoteException{
 //        while (true) {
 //            try {

@@ -6,6 +6,12 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface GameService extends Remote {
+    /**
+     * Registro de cliente para callbacks do servidor.
+     *
+     * @param cliente Novo cliente a ser registrado.
+     * */
+    void registrarCliente(ClientCallback cliente) throws RemoteException;
 
     // Métodos de ações
 
@@ -24,9 +30,5 @@ public interface GameService extends Remote {
     // Métodos de Validação
 
     // Métodos de Verificação de estado e status
-    /**
-     * Verifica se o jogo está em fase de aguardar jogadores (antes de iniciar).
-     * @return true quando está aguardando, false quando o jogo já foi iniciado.
-     * */
-    Boolean aguardandoJogadores() throws RemoteException;
+
 }
