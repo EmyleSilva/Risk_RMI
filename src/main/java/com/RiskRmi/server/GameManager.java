@@ -25,8 +25,8 @@ public class GameManager {
     private Dado dado;
     private Boolean jogoIniciado = false;
     private final int MIN_JOGADORES = 2;
-    private List<ClientCallback> clientes;
-    private NotificacoesCallback notificador;
+    private final List<ClientCallback> clientes;
+    private final NotificacoesCallback notificador;
 
 
     public GameManager(int TAMANHO_BARALHO, List<ClientCallback> clientes) {

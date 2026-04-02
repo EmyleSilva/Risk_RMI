@@ -15,8 +15,8 @@ import java.util.List;
 
 public class GameServiceImpl extends UnicastRemoteObject implements GameService  {
 
-    private GameManager manager;
-    private List<ClientCallback> clientes;
+    private final GameManager manager;
+    private final List<ClientCallback> clientes;
 
     protected GameServiceImpl() throws RemoteException {
         super();
