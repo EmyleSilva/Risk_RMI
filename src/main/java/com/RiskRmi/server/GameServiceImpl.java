@@ -29,6 +29,11 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         return jogador.getId();
     }
 
+    @Override
+    public Boolean aguardandoJogadores() throws RemoteException {
+        return manager.verificarAguardandoJogadores();
+    }
+
     public static void main(String[] args) {
         try {
             LocateRegistry.createRegistry(1099);

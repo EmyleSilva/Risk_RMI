@@ -21,10 +21,6 @@ public class UserCLI {
         this.jogadorId = jogadorId;
     }
 
-//    public Boolean jogoNaoIniciado() throws RemoteException {
-//        return risk.aguardandoJogadores();
-//    }
-
     public void aguardandoJogador() {
         System.out.println("======================================================================");
         System.out.println("=                                                                    =");

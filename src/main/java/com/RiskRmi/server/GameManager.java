@@ -22,12 +22,13 @@ public class GameManager {
     private final int TAMANHO_BARALHO;
     private Dado dado;
     private Boolean jogoIniciado = false;
-    private final int MIN_JOGADORES = 2;
+    private final int MIN_JOGADORES = 3;
 
     public GameManager(int TAMANHO_BARALHO) {
         this.TAMANHO_BARALHO = TAMANHO_BARALHO;
         this.dado = new Dado();
         this.jogadores = new ArrayList<>();
+
     }
 
     /**
@@ -246,6 +247,27 @@ public class GameManager {
             default: throw new IllegalArgumentException();
         }
     }
+
+    /*******************************************************
+     *            MÉTODOS DE CONTROLE DO JOGO
+     *******************************************************/
+
+
+    /**
+     * Verifica se o jogo está em fase de aguardar jogador (quando o mínimo de
+     * jogadores ainda não foi atingido)
+     *
+     * @return true quando está aguardando, false quando jogo é iniciado.
+     * */
+    Boolean verificarAguardandoJogadores() {
+        return !jogoIniciado;
+    }
+
+    /*******************************************************
+     *            MÉTODOS AUXILIARES
+     *******************************************************/
+
+
     /*******************************************************
      *                GETTERS E SETTERS
      *******************************************************/

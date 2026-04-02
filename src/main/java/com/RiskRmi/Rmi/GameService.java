@@ -23,5 +23,10 @@ public interface GameService extends Remote {
 
     // Métodos de Validação
 
-    // Métodos de Verificação de estado e status 
+    // Métodos de Verificação de estado e status
+    /**
+     * Verifica se o jogo está em fase de aguardar jogadores (antes de iniciar).
+     * @return true quando está aguardando, false quando o jogo já foi iniciado.
+     * */
+    Boolean aguardandoJogadores() throws RemoteException;
 }

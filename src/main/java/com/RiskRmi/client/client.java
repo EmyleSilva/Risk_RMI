@@ -30,8 +30,8 @@ public class client {
 
             user = new UserCLI(risk, jogadorId);
 
-//            if (risk.aguardandoJogadores()) user.aguardandoJogador();
-//            while(user.jogoNaoIniciado()) {}
+            if (risk.aguardandoJogadores()) user.aguardandoJogador();
+            while(risk.aguardandoJogadores()) {}
 
 //            user.controladorJogo();
 
