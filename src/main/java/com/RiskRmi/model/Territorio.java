@@ -68,6 +68,19 @@ public class Territorio implements Serializable {
         }
     }
 
+    /**
+     * Calcula o total de tropas no territorio.
+     * @param tropas Tropas do jogo.
+     * @return O total de tropas.
+     * */
+    public Integer getTotalTropas(Map<String, Tropa> tropas) {
+        Tropa infantaria = tropas.get(TipoTropa.INFANTARIA.getNome());
+        Tropa cavalaria = tropas.get(TipoTropa.CAVALARIA.getNome());
+
+        return this.tropas.get(infantaria) + (this.tropas.get(cavalaria) * cavalaria.getValor());
+    }
+
+
     /** Métodos Auxiliares */
     public Integer quantidadeTropasAtuais(Tropa key) {
         return tropas.get(key);

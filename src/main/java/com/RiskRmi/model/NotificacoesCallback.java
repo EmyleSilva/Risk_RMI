@@ -1,6 +1,7 @@
 package com.RiskRmi.model;
 
 import com.RiskRmi.Rmi.ClientCallback;
+import com.RiskRmi.enuns.FasesJogo;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -49,5 +50,50 @@ public class NotificacoesCallback {
         =                                                                    =
         ======================================================================
         """;
+    }
+
+    /**
+     * @param nomeJogadorAtual Nome do jogador atual para informar de quem é o turno.
+     * @return Mensagem de aviso: posicionamento atual.
+     * */
+    public String posicionamentoInicial(String nomeJogadorAtual) {
+        return """ 
+                ======================================================================
+                                                                                    
+                                   FASE DE POSICIONAMENTO INICIAL                                                      
+                                                                                    
+                                          Jogador Atual > %s                                         
+                ======================================================================
+                """.formatted(nomeJogadorAtual);
+    }
+
+    /**
+     * @param nome Nome do jogador atual para informar quem realizou a ação acionada.
+     * @param nomeTerritorio O território onde a tropa foi adicionada.
+     * @param totalTropas A quantidade de tropas adicionadas.
+     * @return Mensagem de aviso: nova ação - adição de tropas em um território.
+     * */
+    public String tropasAdicionadas(String nome, String nomeTerritorio, Integer totalTropas) {
+        return """ 
+                ======================================================================                                                                   
+                                         NOVA AÇÃO REALIZADA!                         
+                                  O Jogador %s adicionou tropas em:                  
+                                           %s | Total Tropas: %d                     
+                ======================================================================
+                """.formatted(nome, nomeTerritorio, totalTropas);
+    }
+
+    /**
+     * @param nome Nome do jogador atual.
+     * @param faseAtual A nova fase iniciada.
+     * @return Mensagem de aviso: nova fase iniciada.
+     * */
+    public String novaFase(String nome, FasesJogo faseAtual) {
+        return """ 
+                ======================================================================
+                                        FASE DE %s                                        
+                                     Jogador Atual > %s                          
+                ======================================================================
+                """.formatted(faseAtual.getDescricao(), nome);
     }
 }

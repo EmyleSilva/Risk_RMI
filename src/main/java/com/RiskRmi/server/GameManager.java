@@ -5,6 +5,7 @@ import com.RiskRmi.enuns.FasesJogo;
 import com.RiskRmi.enuns.Territorios;
 import com.RiskRmi.enuns.TipoCarta;
 import com.RiskRmi.enuns.TipoTropa;
+import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.*;
 
 import java.rmi.RemoteException;
@@ -27,7 +28,7 @@ public class GameManager {
     private final int MIN_JOGADORES = 2;
     private final List<ClientCallback> clientes;
     private final NotificacoesCallback notificador;
-
+    private final Validate validator;
 
     public GameManager(int TAMANHO_BARALHO, List<ClientCallback> clientes) {
         this.TAMANHO_BARALHO = TAMANHO_BARALHO;
@@ -35,6 +36,8 @@ public class GameManager {
         this.jogadores = new ArrayList<>();
         this.clientes = clientes;
         this.notificador = new NotificacoesCallback();
+        this.validator = new Validate();
+        this.fasesPorTurno = new Stack<>();
     }
 
     /**
@@ -66,6 +69,7 @@ public class GameManager {
             jogoIniciado = true;
             System.out.println("Jogo Iniciado!");
             notificador.callback(clientes, notificador.jogoIniciado());
+            notificarPosicionamentoInicial();
         }else {
             notificador.callback(clientes, notificador.aguardandoJogadores());
         }
@@ -90,13 +94,11 @@ public class GameManager {
           distribuirTerritorios();
 
         /**Calcula a quantidade inicial de tropas de cada jogador */
-        int totalTropas = calcularTropasIniciais(jogadores.size());
+        Integer totalTropas = calcularTropasIniciais(jogadores.size());
         for (Jogador j : jogadores) {
             j.setTropasDisponiveis(totalTropas - j.getTerritorios().size());
         }
-
         System.out.println("ID do Jogador Atual: " + jogadores.get(jogadorAtualIndex).getId());
-
     }
 
     /**
@@ -219,20 +221,23 @@ public class GameManager {
      * Leva em consideração as seguintes condições de turno para o empilhamento:
      *
      * Se é o ínicio do jogo (todos os jogadores acabaram de se conectar), empilha a fase POSICIONAMENTO_INICIAL.
-     * Caso contrário, se trata de um turno normal, então empilha as fases de "POSICIONAMENTO", "ATAQUE" e "MOVIMENTAÇÃO".
+     * Se acabou de sair da fase de posicionamento Incial, não existe bonificação de tropas, então empilha apenas ATAQUE E MOVIMENTAÇÃO
+     * Caso contrário, se trata de um turno normal, então empilha as fases de POSICIONAMENTO, ATAQUE e MOVIMENTAÇÃO.
      *
      * @param inicioJogo Flag que indica se é ou não inicio do jogo.
      * */
     public void criarPilhaFases(Boolean inicioJogo) {
-
-        fasesPorTurno = new Stack<>();
-
         if (inicioJogo) {
             fasesPorTurno.push(FasesJogo.POSICIONAMETO_INICAL);
-        }else {
+        }else if (fasesPorTurno.peek() != FasesJogo.POSICIONAMETO_INICAL) {
+            fasesPorTurno.clear();
             fasesPorTurno.push(FasesJogo.MOVIMENTACAO);
             fasesPorTurno.push(FasesJogo.ATAQUE);
             fasesPorTurno.push(FasesJogo.POSCIONAMENTO);
+        }else {
+            fasesPorTurno.clear();
+            fasesPorTurno.push(FasesJogo.MOVIMENTACAO);
+            fasesPorTurno.push(FasesJogo.ATAQUE);
         }
     }
 
@@ -267,7 +272,7 @@ public class GameManager {
      * @param quantidadeJogadores O total de jogadores na sessão.
      * @return int Valor total de tropas para cada jogador.
      * */
-    public int calcularTropasIniciais(int quantidadeJogadores) {
+    public Integer calcularTropasIniciais(int quantidadeJogadores) {
         switch (quantidadeJogadores) {
             case 2: return 20;
             case 3: return 15;
@@ -280,11 +285,118 @@ public class GameManager {
      *            MÉTODOS DE CONTROLE DO JOGO
      *******************************************************/
 
+    /**
+     * Posiciona uma determinada quantidade de tropas em um território.
+     * Só ocorre no inicio do jogo para a distribuição inicial das tropas recebidas pelos jogadores.
+     *
+     * @param jogadorId O id do Jogador que quer realizar o posicionamento.
+     * @param nomeTerritorio O territorio para adicionar tropas.
+     * @param quantidadeTropas A quantidade de tropas que deve ser adicionada.
+     * */
+    public void posicionamentoInicial(int jogadorId, String nomeTerritorio, int quantidadeTropas) {
+        Jogador jogador = jogadores.get(jogadorId-1);
+        Territorio territorio = territorios.get(nomeTerritorio);
+
+        validator.validarFaseAtual(fasesPorTurno, FasesJogo.POSICIONAMETO_INICAL);
+        validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarTerritorioJogador(territorio, jogador);
+        validator.validarTropasDisponiveis(quantidadeTropas, jogador);
+
+        territorio.adicionarTropas(tropas, quantidadeTropas);
+        jogador.setTropasDisponiveis(jogador.getTropasDisponiveis()-quantidadeTropas);
+
+        notificador.callback(clientes, notificador.tropasAdicionadas(jogador.getNome(), nomeTerritorio, territorio.getTotalTropas(tropas)));
+
+        if (jogador.getTropasDisponiveis() == 0) {
+            if (ultimoDaRodada()) {
+                passarVez(jogadorId);
+            }else {
+                jogadorAtualIndex++;
+                notificarPosicionamentoInicial();
+            }
+        }
+    }
+
+    /**
+     * Busca os nomes de todos os territorios do jogador,
+     * juntamente com a quantidade total de cada tipo tropa presente no territorio.
+     *
+     * @param jogadorId Jogador que realizou a requisição.
+     * @return Uma lista com todos os nomes e tropas dos territorios.
+     * */
+    public List<String> buscarTerritoriosTropasJogador(int jogadorId) {
+        return jogadores.get(jogadorId-1).buscarTerritoriosTropas(tropas);
+    }
+
+    /**
+     * Busca a quantidade total de tropas que o jogador ainda tem disponivel para posicionamento inicial.
+     * @param jogadorId Id do Jogador que realizou a requisição.
+     * @return A quantidade de tropas disponiveis.
+     * */
+    public Integer buscarTropasDisponiveisJogador(int jogadorId) {
+        return jogadores.get(jogadorId-1).getTropasDisponiveis();
+    }
+
+    /**
+     * Retorna a quantidade total de tropas (cavalaria + infantaria) do territorio
+     * @param nomeTerritorio O territorio para busca do total.
+     * @return A quantidade total de tropas.
+     * */
+    public Integer totalTropasTerritorio(String nomeTerritorio) {
+        Territorio territorio = territorios.get(nomeTerritorio);
+        return territorio.getTotalTropas(tropas);
+    }
 
     /*******************************************************
      *            MÉTODOS AUXILIARES
      *******************************************************/
 
+    /**
+     * Busca os nomes de todos os territórios de um jogador.
+     * @param jogadorId Jogador que realizou a requisição.
+     * @return Uma lista com todos os nomes dos territorios.
+     * */
+    public List<String> buscarTerritoriosJogador(int jogadorId) {
+        return jogadores.get(jogadorId-1).buscarTerritorios();
+    }
+
+    /**
+     * Passa a vez para o próximo jogador na fila.
+     * Caso seja o ultimo jogador, retorna para o primeiro da fila.
+     * Sempre reinicia a pilha de fases para cada novo jogador.
+     *
+     * TODO: Não permitir passar a vez manualmente no turno de Posicionamento Inicial.
+     *
+     * @param jogadorId O id do jogador que realizou a requisição direta ou indiretamente
+     *                  (quando acabam as peças do posicionamento inicial).
+     * */
+    public void passarVez(int jogadorId) {
+        validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+
+        if (ultimoDaRodada()) jogadorAtualIndex = 0;
+        else jogadorAtualIndex++;
+
+        final String nomeJogadorAtual = jogadores.get(jogadorAtualIndex).getNome();
+        criarPilhaFases(false);
+        notificador.callback(clientes, notificador.novaFase(nomeJogadorAtual, fasesPorTurno.peek()));
+    }
+
+    /**
+     * Informa aos jogadores que o jogo iniciou a fase de Posicionamento atual.
+     * Informa também qual o jogador da vez.
+     * */
+    public void notificarPosicionamentoInicial() {
+        String nomeJogadorAtual = jogadores.get(jogadorAtualIndex).getNome();
+        notificador.callback(clientes, notificador.posicionamentoInicial(nomeJogadorAtual));
+    }
+
+    /**
+     * Verifica se já está no ultimo jogador da fila.
+     * @return true se for o último jogador, false caso contrário.
+     * */
+    public boolean ultimoDaRodada() {
+        return (jogadorAtualIndex + 1) == jogadores.size();
+    }
 
     /*******************************************************
      *                GETTERS E SETTERS

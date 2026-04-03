@@ -39,7 +39,7 @@ public class client {
 
             Thread.sleep(3000);
 
-//            user.controladorJogo();
+            user.controladorJogo();
 
         }catch (RemoteException | NotBoundException | MalformedURLException | InterruptedException e) {
             System.out.println(e.getMessage());

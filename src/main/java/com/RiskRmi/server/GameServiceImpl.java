@@ -40,6 +40,36 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         return jogador.getId();
     }
 
+    @Override
+    public void posicionamentoInicialDeTropas(int jogadorId, String nomeTerritorio, int quantidadeTropas) throws RemoteException, InvalidActionException {
+        manager.posicionamentoInicial(jogadorId, nomeTerritorio, quantidadeTropas);
+    }
+
+    @Override
+    public void passarVez(int jogadorId) throws RemoteException, InvalidActionException {
+        manager.passarVez(jogadorId);
+    }
+
+    @Override
+    public List<String> buscarTerritoriosTropasJogador(int jogadorId) throws RemoteException, InvalidActionException {
+        return manager.buscarTerritoriosTropasJogador(jogadorId);
+    }
+
+    @Override
+    public List<String> buscarTerritoriosJogador(int jogadorId) throws RemoteException, InvalidActionException {
+        return manager.buscarTerritoriosJogador(jogadorId);
+    }
+
+    @Override
+    public Integer buscarTotalTropasTerritorio(String nomeTerritorio) throws RemoteException, InvalidActionException {
+        return manager.totalTropasTerritorio(nomeTerritorio);
+    }
+
+    @Override
+    public Integer quantidadeTropasDisponiveis(int jogadorId) throws RemoteException, InvalidActionException {
+        return manager.buscarTropasDisponiveisJogador(jogadorId);
+    }
+
     public static void main(String[] args) {
         try {
             LocateRegistry.createRegistry(1099);
@@ -52,7 +82,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         } catch (RemoteException | MalformedURLException | InvalidActionException e) {
 
             System.out.println(e.getMessage());
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 }

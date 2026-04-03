@@ -13,6 +13,6 @@ public class ClientCallbackImpl extends UnicastRemoteObject implements ClientCal
 
     @Override
     public void onGameEvent(String mensagem) throws RemoteException {
-        System.out.println("\n >>> newEvent \n" + mensagem + "\n >>> endEvent\n");
+        System.out.println(mensagem);
     }
 }

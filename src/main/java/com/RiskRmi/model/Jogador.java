@@ -20,6 +20,37 @@ public class Jogador implements Serializable {
         territorios = new ArrayList<>();
     }
 
+    /**
+     * Busca todos os territorios do jogador.
+     * @return Uma lista com o nome de todos os territorios.
+     * */
+    public List<String> buscarTerritorios() {
+        List<String> nomesTerritorios = new ArrayList<>();
+        for (Territorio t : territorios) {
+            nomesTerritorios.add(t.getNome().getNome());
+        }
+        return nomesTerritorios;
+    }
+
+    /**
+     * Busca uma lista de territorios juntamente com as tropas (de diferentes tipos) pertencentes a ele.
+     * @param tropasJogo Tropas do Jogo.
+     * @return Uma lista de territorios e suas tropas.
+     * */
+    public List<String> buscarTerritoriosTropas(Map<String, Tropa> tropasJogo) {
+        List<String> territoriosTropas = new ArrayList<>();
+        Tropa infantaria = tropasJogo.get(TipoTropa.INFANTARIA.getNome());
+        Tropa cavalaria = tropasJogo.get(TipoTropa.CAVALARIA.getNome());
+
+        for (Territorio t : territorios) {
+            Integer i = t.getTropas().get(infantaria);
+            Integer c = t.getTropas().get(cavalaria);
+            territoriosTropas.add("Território: " + t.getNome().getNome() + "Tropas: i(" + i + ") | c(" + c + ")");
+        }
+
+        return territoriosTropas;
+    }
+
     /** Metódos para o jogo */
 
     /**
