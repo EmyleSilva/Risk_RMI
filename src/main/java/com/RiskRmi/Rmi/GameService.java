@@ -1,6 +1,7 @@
 package com.RiskRmi.Rmi;
 
 import com.RiskRmi.exceptions.InvalidActionException;
+import com.RiskRmi.model.Territorio;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -72,4 +73,27 @@ public interface GameService extends Remote {
      * @return A quantidade de tropas disponiveis.
      * */
     Integer quantidadeTropasDisponiveis(int jogadorId) throws RemoteException, InvalidActionException;
+
+    /**
+     * Método que executa um ataque.
+     *
+     * @param jogadorId O jogador que deseja atacar.
+     * @param origem O território de origem do ataque.
+     * @param destino O território que será atacado.
+     * */
+    void atacar(int jogadorId, String origem, String destino) throws RemoteException, InvalidActionException;
+
+    /**
+     * Muda a fase do jogo para a próxima da pilha. Se for a última fase do turno de um jogador,
+     * passa para o turno do próximo jogador da fila.
+     *
+     * @param jogadorId O Id do jogador que está passando a fase.
+     * */
+    void passarFase(int jogadorId) throws RemoteException, InvalidActionException;
+
+    /**
+     * Realiza uma busca por todos os territórios do jogo.
+     * @return Uma lista com o nome de todos os territórios.
+     * */
+    List<Territorio> buscarTerritorios() throws RemoteException;
 }

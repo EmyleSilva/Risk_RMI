@@ -9,12 +9,12 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
-public class client {
+public class Client {
 
     static Scanner input = new Scanner(System.in);
 
     static String nomeJogador = "";
-    static String name = "rmi://localhost:1099/risk";
+    static String name = "rmi://localhost/risk";
     static GameService risk = null;
     static int jogadorId;
     static UserCLI user;

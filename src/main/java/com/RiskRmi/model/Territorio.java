@@ -80,10 +80,63 @@ public class Territorio implements Serializable {
         return this.tropas.get(infantaria) + (this.tropas.get(cavalaria) * cavalaria.getValor());
     }
 
+    /**
+     * Retira a quantidade de tropas perdidas do território.
+     * Reorganiza todas as tropas novamente para que fique equilibrado entre infantaria e
+     * cavalaria.
+     *
+     * @param tropas Todas as tropas do jogo.
+     * @param quantidade A quantidade de tropas perdidas no território.
+     * */
+    public void retirarTropas(Map<String, Tropa> tropas, int quantidade) {
+        Tropa infantaria = tropas.get(TipoTropa.INFANTARIA.getNome());
+        Tropa cavalaria = tropas.get(TipoTropa.CAVALARIA.getNome());
+        Integer totalTropas = getTotalTropas(tropas);
+
+        Integer quantidadeInfantaria = this.tropas.get(infantaria);
+        Integer quantidadeCavalaria = this.tropas.get(cavalaria);
+        System.out.println("\nANTES: (infantaria) - " + quantidadeInfantaria + " (cavalaria) - " + quantidadeCavalaria);
+
+        quantidadeInfantaria = totalTropas - quantidade;
+        quantidadeCavalaria = 0;
+
+        this.tropas.put(infantaria, quantidadeInfantaria);
+        this.tropas.put(cavalaria, quantidadeCavalaria);
+
+        reorganizarTropas(tropas);
+    }
+
+    /**
+     * Verifica se o território ficou sem nenhuma tropa.
+     * Caso sim, o território foi capturado pelo jogador que realizou o último ataque.
+     *
+     * @param tropas Todas as tropas do jogo.
+     * @return true se o território foi capturado e false caso contrário.
+     * */
+    public boolean verificarCaptura(Map<String, Tropa> tropas) {
+        return getTotalTropas(tropas) == 0;
+    }
 
     /** Métodos Auxiliares */
     public Integer quantidadeTropasAtuais(Tropa key) {
         return tropas.get(key);
+    }
+
+    /**
+     * Reordena as tropas entre cavalaria e infantaria para melhor distribuição.
+     *
+     * @param tropas Todas as tropas do jogo.
+     * */
+    public void reorganizarTropas(Map<String, Tropa> tropas) {
+        Integer totalTropas = getTotalTropas(tropas);
+        Tropa infantaria = tropas.get(TipoTropa.INFANTARIA.getNome());
+        Tropa cavalaria = tropas.get(TipoTropa.CAVALARIA.getNome());
+
+        Integer quantidadeCavalaria = totalTropas / cavalaria.getValor();
+        Integer quantidadeInfantaria = totalTropas % cavalaria.getValor();
+
+        this.tropas.put(infantaria, quantidadeInfantaria);
+        this.tropas.put(cavalaria, quantidadeCavalaria);
     }
 
     /** Getters e Setters */
@@ -123,7 +176,6 @@ public class Territorio implements Serializable {
     public String toString() {
         return "Territorio{" +
                 "nome=" + nome +
-                ", dono=" + dono +
                 ", vizinhos=" + vizinhos +
                 ", tropas=" + tropas +
                 '}';

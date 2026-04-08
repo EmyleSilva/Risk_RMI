@@ -5,11 +5,10 @@ import com.RiskRmi.enuns.FasesJogo;
 import com.RiskRmi.enuns.Territorios;
 import com.RiskRmi.enuns.TipoCarta;
 import com.RiskRmi.enuns.TipoTropa;
-import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.*;
 
-import java.rmi.RemoteException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameManager {
 
@@ -28,7 +27,7 @@ public class GameManager {
     private final int MIN_JOGADORES = 2;
     private final List<ClientCallback> clientes;
     private final NotificacoesCallback notificador;
-    private final Validate validator;
+    private Validate validator;
 
     public GameManager(int TAMANHO_BARALHO, List<ClientCallback> clientes) {
         this.TAMANHO_BARALHO = TAMANHO_BARALHO;
@@ -36,7 +35,6 @@ public class GameManager {
         this.jogadores = new ArrayList<>();
         this.clientes = clientes;
         this.notificador = new NotificacoesCallback();
-        this.validator = new Validate();
         this.fasesPorTurno = new Stack<>();
     }
 
@@ -99,6 +97,9 @@ public class GameManager {
             j.setTropasDisponiveis(totalTropas - j.getTerritorios().size());
         }
         System.out.println("ID do Jogador Atual: " + jogadores.get(jogadorAtualIndex).getId());
+
+        /** Intanciar Validator */
+        this.validator = new Validate(tropas, territorios);
     }
 
     /**
@@ -347,6 +348,124 @@ public class GameManager {
         return territorio.getTotalTropas(tropas);
     }
 
+    /**
+     * Metodo que realiza todo o fluxo de ataque.
+     * Realiza todas as devidas validações para integridade do jogo,
+     * define com quantas tropas os jogadores irão atacar/defender com base na quantidade de tropas
+     * nos respectivos territórios. Lança os dados de forma aleatória, realiza a comparação, e calcula a
+     * quantidade de perdas dos dois lados com base na comparação dos dados.
+     *
+     * Verifica se o território foi conquistado pelo atacante e, caso sim, realiza a mudança de dono do território.
+     * Também notifica todos os jogadores das ações importantes processadas durante os ataques.
+     *
+     * @param jogadorId O id do jogador que está atacando.
+     * @param origem Nome do território do jogador atacante.
+     * @param destino Nome do território que o jogador quer atacar.
+     * */
+    public void atacar(int jogadorId, String origem, String destino) {
+        Territorio territorioOrigem = territorios.get(origem);
+        Territorio territorioDestino = territorios.get(destino);
+        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogadorAtacado = territorioDestino.getDono();
+
+        validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarTerritorioJogador(territorioOrigem, jogador);
+        validator.validarVizinho(territorioOrigem, territorioDestino);
+        validator.validarQuantidadeTropas(true, territorioOrigem);
+
+        System.out.println("Ataque Iniciado....");
+
+        notificador.callback(clientes, notificador.notificarAtaque(jogadorAtacado.getNome(), destino));
+
+        //Calcular quantas tropas de defesa
+        int tropasAtaque = calcularTropasAtaque(territorioOrigem);
+        int tropasDefesa = calcularTropasDefesa(territorioDestino);
+        int menor = (tropasAtaque < tropasDefesa) ? tropasAtaque : tropasDefesa;
+
+        //Rolar dados de ataque e defesa
+        ataquesResultados = dado.rolarDados(tropasAtaque);
+        defesasResultados = dado.rolarDados(tropasDefesa);
+
+        int perdasAtaque = 0;
+        int perdasDefesa = 0;
+
+        //Comparar dados
+        for (int i = 0; i < menor; i++) {
+            if (ataquesResultados.get(i) > defesasResultados.get(i)) {
+                perdasDefesa++;
+            }else if (ataquesResultados.get(i) <= defesasResultados.get(i)){ //TODO:Tirar esse condicional desnecessário
+                perdasAtaque++;
+            }
+        }
+
+        //Remove as tropas perdidas dos territórios
+        if (perdasAtaque > 0) {
+            territorioOrigem.retirarTropas(tropas, perdasAtaque);
+        }
+        if (perdasDefesa > 0) {
+            territorioDestino.retirarTropas(tropas, perdasDefesa);
+        }
+
+        /** TODO: Melhorar essa mensagem (contéudo e ordem que as coisas aparecem) **/
+        /** Verifica se houve captura de território, se sim, altera o dono */
+        final boolean territorioCapturado = territorioDestino.verificarCaptura(tropas);
+        String mensagem = "";
+        if (territorioCapturado) {
+            territorioDestino.setDono(jogador);
+            jogadorAtacado.getTerritorios().remove(territorioDestino);
+            jogador.getTerritorios().add(territorioDestino);
+            territorioDestino.adicionarTropas(tropas,tropasAtaque - perdasAtaque);
+            //Com a conquista do território, o jogador ganha uma carta do baralho
+
+            mensagem = mensagem + """
+                        %s Capturou o território %s!
+                        Você ganhou 1 carta pela conquista.
+                    """.formatted(jogador.getNome(), destino);
+
+        }
+
+        mensagem = mensagem + "Dados Ataque: " + ataquesResultados.stream().map(Object::toString).collect(Collectors.joining(", "))
+                   + "\n Dados Defesa: " + defesasResultados.stream().map(Object::toString).collect(Collectors.joining(", "))
+                   + "\n"+ jogador.getNome() + " perdeu " + perdasAtaque + " \n" + jogadorAtacado.getNome() + " perdeu " + perdasDefesa;
+
+        notificador.callback(clientes, notificador.notificarResultadoAtaque(mensagem));
+
+        System.out.println("Ataque Finalizado...");
+    }
+
+    /**
+     * Passa para a próxima fase do jogo. Mantém o mesmo jogador se ainda for uma fase do mesmo turno,
+     * caso seja a última fase (Movimentação), automaticamente passa para o turno do próximo jogador.
+     *
+     * @param jogadorId Jogador que solicitou a mudança de fase.
+     * */
+    public void proximaFase(int jogadorId) {
+        validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+
+        if (fasesPorTurno.peek() == FasesJogo.MOVIMENTACAO) {
+            passarVez(jogadorAtualIndex);
+        }else {
+            fasesPorTurno.pop();
+            notificador.callback(clientes, notificador.novaFase(jogadores.get(jogadorAtualIndex).getNome(), fasesPorTurno.peek()));
+        }
+    }
+
+    /**
+     * Busca todos os territórios criados no jogo.
+     *
+     * @return Uma lista com os nomes dos territórios existentes.
+     * */
+    public List<Territorio> buscarTerritorios() {
+        List<Territorio> territorios = new ArrayList<>();
+
+        for (String s : this.territorios.keySet()) {
+            territorios.add(this.territorios.get(s));
+        }
+
+        return territorios;
+    }
+
+
     /*******************************************************
      *            MÉTODOS AUXILIARES
      *******************************************************/
@@ -398,6 +517,36 @@ public class GameManager {
         return (jogadorAtualIndex + 1) == jogadores.size();
     }
 
+    /**
+     * Seleciona a quantidade de tropas que serão usadas para atacar com base
+     * na quantidade de tropas totais presentes no território de origem do ataque.
+     * Sempre retorna a maior quantidade possível.
+     *
+     * @param territorio O território de origem do ataque.
+     * @return A quantidade máxima de tropas de ataque.
+     * */
+    public int calcularTropasAtaque(Territorio territorio) {
+        int totalTropas = territorio.getTotalTropas(tropas);
+
+        if (totalTropas > 3) return 3;
+        if (totalTropas == 3) return 2;
+        return 1;
+    }
+
+    /**
+     * Seleciona a quantidade de tropas que serão usadas para defender com base na quantidade de
+     * tropas totais presentes no território que será atacado. Sempre retorna a maior quantidade
+     * possível.
+     *
+     * @param territorio O território que será atacado.
+     * @return A quantidade máxima de tropas.
+     * */
+    public int calcularTropasDefesa(Territorio territorio) {
+        int totalTropas = territorio.getTotalTropas(tropas);
+
+        if (totalTropas >= 2) return 2;
+        return 1;
+    }
     /*******************************************************
      *                GETTERS E SETTERS
      *******************************************************/

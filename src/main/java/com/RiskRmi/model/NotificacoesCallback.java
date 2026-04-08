@@ -96,4 +96,31 @@ public class NotificacoesCallback {
                 ======================================================================
                 """.formatted(faseAtual.getDescricao(), nome);
     }
+
+    /**
+     * @param jogadorDefesa Nome do jogador que está sob ataque.
+     * @param territorio Nome do território que está sob ataque.
+     * @return Mensagem de aviso: território sob ataque.
+     * */
+    public String notificarAtaque(String jogadorDefesa, String territorio) {
+        return """ 
+                ======================================================================
+                                        NOVA AÇÃO REALIZADA!                                        
+                                   %s : Seu território %s está sendo atacado!                         
+                ======================================================================
+                """.formatted(jogadorDefesa, territorio);
+    }
+
+    /**
+     * @param resultados Mensagem personalizada com os resultados do último ataque.
+     * @return Mensagem de aviso: ataque finalizado.
+     * */
+    public String notificarResultadoAtaque(String resultados) {
+        return """ 
+                ======================================================================
+                                        ATAQUE FINALIZADO!                                      
+                                  %s                       
+                ======================================================================
+                """.formatted(resultados);
+    }
 }

@@ -4,6 +4,7 @@ import com.RiskRmi.Rmi.ClientCallback;
 import com.RiskRmi.Rmi.GameService;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.Jogador;
+import com.RiskRmi.model.Territorio;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -70,12 +71,28 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         return manager.buscarTropasDisponiveisJogador(jogadorId);
     }
 
+    @Override
+    public void atacar(int jogadorId, String origem, String destino) throws RemoteException, InvalidActionException {
+        manager.atacar(jogadorId, origem, destino);
+    }
+
+    @Override
+    public void passarFase(int jogadorId) throws RemoteException, InvalidActionException {
+        manager.proximaFase(jogadorId);
+    }
+
+    @Override
+    public List<Territorio> buscarTerritorios() throws RemoteException {
+        return manager.buscarTerritorios();
+    }
+
     public static void main(String[] args) {
         try {
+//            System.setProperty("java.rmi.server.hostname", "192.168.15.7");
             LocateRegistry.createRegistry(1099);
 
             GameServiceImpl risk = new GameServiceImpl();
-            String name = "rmi://localhost:1099/risk";
+            String name = "rmi://localhost/risk";
             Naming.rebind(name, risk);
             System.out.println("Servidor Iniciado.......");
 

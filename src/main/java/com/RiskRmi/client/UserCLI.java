@@ -2,6 +2,7 @@ package com.RiskRmi.client;
 
 import com.RiskRmi.Rmi.GameService;
 import com.RiskRmi.exceptions.InvalidActionException;
+import com.RiskRmi.model.Territorio;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -29,8 +30,7 @@ public class UserCLI {
                         opcaoPosicionarTropasIniciais();
                         break;
                     case 2:
-                        System.out.println("TODO");
-//                        opcaoAtacar();
+                        opcaoAtacar();
                         break;
                     case 3:
                         System.out.println("TODO");
@@ -62,16 +62,17 @@ public class UserCLI {
         System.out.println("Escolha uma opção abaixo: ");
         System.out.println("""
                         1. Posicionar Tropas Iniciais \n
-                        2. Posicionar Tropas\n
-                        3. Atacar \n
+                        2. Atacar\n
+                        3. Posicionar Tropas \n
                         4. Movimentar Tropas \n
                         5. Mostrar Estado do Jogo \n
                         0. Passar a Vez\n
                         """);
         this.opcaoMenu = input.nextInt();
+        input.nextLine(); //Limpar o buffer.
     }
 
-    public void opcaoPosicionarTropasIniciais() throws RemoteException {
+    public void opcaoPosicionarTropasIniciais() throws RemoteException, InvalidActionException {
 
         int quantidadeTropas; int index = 1;
         String territorioEscolhido;
@@ -82,17 +83,48 @@ public class UserCLI {
         }
         System.out.println("Selecione um território: ");
         territorioEscolhido = territorios.get(input.nextInt()-1);
+        input.nextLine(); //Limpar o buffer.
 
         System.out.println("Total de Tropas Disponiveis: " + risk.quantidadeTropasDisponiveis(this.jogadorId));
         System.out.println("Quantas tropas deseja posicionar? ");
         quantidadeTropas = input.nextInt();
+        input.nextLine(); //Limpar o buffer.
 
         risk.posicionamentoInicialDeTropas(jogadorId, territorioEscolhido, quantidadeTropas);
     }
-//
-//    public void opcaoAtacar() {
-//        System.out.println("TODO!");
-//    }
+
+    public void opcaoAtacar() throws RemoteException, InvalidActionException {
+        int continuarAtaque = 1;
+        exibirTerritorios();
+
+        String origem, destino;
+
+        while (continuarAtaque != 0) {
+            System.out.println("Digite o nome do território de origem: ");
+            origem = input.nextLine();
+            System.out.println("Digite o nome do território que você quer atacar: ");
+            destino = input.nextLine();
+
+            risk.atacar(jogadorId, origem, destino);
+
+            System.out.println("(1) - CONTINUAR ATAQUE\n (0) - IR PARA PRÓXIMA FASE\n");
+            continuarAtaque = input.nextInt();
+            input.nextLine(); //Limpar o buffer.
+        }
+
+        risk.passarFase(jogadorId);
+    }
+
+    public void exibirTerritorios() throws RemoteException{
+        List<Territorio> territorios = risk.buscarTerritorios();
+
+        System.out.println("**************************** TERRITÓRIOS ****************************");
+        for (Territorio t : territorios) {
+            System.out.println(t);
+        }
+        System.out.println("*********************************************************************");
+
+    }
 //
 //    public void opcaoMovimentarTropas() {
 //        System.out.println("TODO!");

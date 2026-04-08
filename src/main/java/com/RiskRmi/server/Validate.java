@@ -1,16 +1,24 @@
 package com.RiskRmi.server;
 
 import com.RiskRmi.enuns.FasesJogo;
+import com.RiskRmi.enuns.Territorios;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.Jogador;
 import com.RiskRmi.model.Territorio;
+import com.RiskRmi.model.Tropa;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Validate {
 
-    public Validate() {
+    private Map<String, Tropa> tropas;
+    private Map<String, Territorio> territorios;
+
+    public Validate(Map<String, Tropa> tropas, Map<String, Territorio> territorios) {
+        this.tropas = tropas;
+        this.territorios = territorios;
     }
 
     public void validarTurnoJogador(List<Jogador> jogadores, int jogadorId, int indexAtual) {
@@ -39,6 +47,28 @@ public class Validate {
         if (fasesJogo != fasesPorTurno.peek()) {
             throw new InvalidActionException("Ação inválida! O turno atual é: " + fasesPorTurno.peek().getDescricao());
         }
+    }
 
+    public void validarVizinho(Territorio origem, Territorio destino) {
+        boolean encontrouVizinho = false;
+        Territorios destinoNome = destino.getNome();
+
+        for (Territorios t : origem.getVizinhos()) {
+            if (t == destinoNome) {
+                encontrouVizinho = true;
+                break;
+            }
+        }
+
+        if (!encontrouVizinho) {
+            throw new InvalidActionException("Você não pode atacar " + destinoNome.getNome() + ". Não são vizinhos!");
+        }
+    }
+
+    public void validarQuantidadeTropas(boolean ataque, Territorio territorio) {
+        /** O ataque não pode ocorrer de um território que possui apenas 1 tropa. */
+        if (territorio.getTotalTropas(tropas) == 1) {
+            throw new InvalidActionException("Território só possui 1 tropa.");
+        }
     }
 }
