@@ -28,6 +28,7 @@ public class GameManager {
     private final List<ClientCallback> clientes;
     private final NotificacoesCallback notificador;
     private Validate validator;
+    private Map<TipoCarta, Carta> tiposCartaJogo;
 
     public GameManager(int TAMANHO_BARALHO, List<ClientCallback> clientes) {
         this.TAMANHO_BARALHO = TAMANHO_BARALHO;
@@ -201,6 +202,8 @@ public class GameManager {
      * do jogo. A quantidade de cartas é definida pela constante TAMANHO_BARALHO.
      *
      * No fim da distribuição, realiza o embaralhamento das cartas.
+     * Também registra os tipos de carta do jogo (fora do trabalho para fins de gerenciamento do
+     * baralho durante o jogo)
      * */
     public void criarBaralho() {
         baralho = new ArrayList<>();
@@ -215,6 +218,11 @@ public class GameManager {
         }
         /** Embaralha o Deck */
         Collections.shuffle(baralho);
+
+        /** Registra os tipos de cartas no jogo */
+        for (TipoCarta t : tipos) {
+            tiposCartaJogo.put(t, new Carta(t));
+        }
     }
 
     /**
@@ -416,6 +424,8 @@ public class GameManager {
             jogador.getTerritorios().add(territorioDestino);
             territorioDestino.adicionarTropas(tropas,tropasAtaque - perdasAtaque);
             //Com a conquista do território, o jogador ganha uma carta do baralho
+            jogador.adicionarCarta(baralho.getFirst());
+            baralho.removeFirst(); //Retira a carta do deck
 
             mensagem = mensagem + """
                         %s Capturou o território %s!
