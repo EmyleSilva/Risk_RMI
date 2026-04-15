@@ -28,7 +28,7 @@ public class GameManager {
     private final List<ClientCallback> clientes;
     private final NotificacoesCallback notificador;
     private Validate validator;
-    private Map<TipoCarta, Carta> tiposCartaJogo;
+    private Map<TipoCarta, Carta> tiposCartaJogo = new HashMap<>();
 
     public GameManager(int TAMANHO_BARALHO, List<ClientCallback> clientes) {
         this.TAMANHO_BARALHO = TAMANHO_BARALHO;
@@ -377,9 +377,10 @@ public class GameManager {
         Jogador jogadorAtacado = territorioDestino.getDono();
 
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarDonoDestino(jogador, territorioDestino);
         validator.validarTerritorioJogador(territorioOrigem, jogador);
         validator.validarVizinho(territorioOrigem, territorioDestino);
-        validator.validarQuantidadeTropas(true, territorioOrigem);
+        validator.validarQuantidadeTropas(territorioOrigem);
 
         System.out.println("Ataque Iniciado....");
 
@@ -475,6 +476,26 @@ public class GameManager {
         return territorios;
     }
 
+    public void movimentarTropas(int jogadorId, String origem, String destino, Integer quantidadeTropas) {
+        Territorio tOrigem = territorios.get(origem);
+        Territorio tDestino = territorios.get(destino);
+        Jogador jogador = jogadores.get(jogadorId-1);
+
+        validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarTerritorioJogador(tOrigem, jogador);
+        validator.validarTerritorioJogador(tDestino, jogador);
+        validator.validarVizinho(tOrigem, tDestino);
+        validator.validarQuantidadeTropas(quantidadeTropas, tOrigem);
+
+        //realizar movimentação
+        tOrigem.retirarTropas(tropas, quantidadeTropas);
+        tDestino.adicionarTropas(tropas, quantidadeTropas);
+
+        tDestino.reorganizarTropas(tropas);
+
+        notificador.callback(clientes, notificador.tropasMovimentadas(jogador.getNome(), origem, destino, tDestino.getTotalTropas(tropas)));
+        passarVez(jogadorId);
+    }
 
     /*******************************************************
      *            MÉTODOS AUXILIARES

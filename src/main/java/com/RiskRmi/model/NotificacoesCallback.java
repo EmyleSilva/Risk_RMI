@@ -123,4 +123,21 @@ public class NotificacoesCallback {
                 ======================================================================
                 """.formatted(resultados);
     }
+
+    /**
+     * @param nome Nome do jogador atual para informar quem realizou a ação acionada.
+     * @param territorioOrigem O território inicial das tropas.
+     * @param territorioDestino O território de destino das tropas.
+     * @param totalTropas A quantidade de tropas adicionadas.
+     * @return Mensagem de aviso: nova ação - adição de tropas em um território.
+     * */
+    public String tropasMovimentadas(String nome, String territorioOrigem, String territorioDestino, Integer totalTropas) {
+        return """ 
+                ======================================================================                                                                   
+                                         NOVA AÇÃO REALIZADA!                         
+                                  O Jogador %s moveu suas tropas.                  
+                                      %s >> %s (%d tropas).                     
+                ======================================================================
+                """.formatted(nome, territorioOrigem, territorioDestino, totalTropas);
+    }
 }

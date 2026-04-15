@@ -96,4 +96,15 @@ public interface GameService extends Remote {
      * @return Uma lista com o nome de todos os territórios.
      * */
     List<Territorio> buscarTerritorios() throws RemoteException;
+
+    /**
+     * Movimenta as tropas de um jogador após a fase de ataque.
+     * Os territórios de origem e destino devem ambos pertencer ao jogador que está realizando a
+     * movimentação.
+     *
+     * @param jogadorId O id do jogador que solicita a movimentação de tropas.
+     * @param origem O território de origem.
+     * @param destino O território de destino.
+     * */
+    void movimentar(int jogadorId, String origem, String destino, Integer quantidadeTropas) throws RemoteException, InvalidActionException;
 }

@@ -65,10 +65,27 @@ public class Validate {
         }
     }
 
-    public void validarQuantidadeTropas(boolean ataque, Territorio territorio) {
+    public void validarQuantidadeTropas(Territorio territorio) {
         /** O ataque não pode ocorrer de um território que possui apenas 1 tropa. */
         if (territorio.getTotalTropas(tropas) == 1) {
             throw new InvalidActionException("Território só possui 1 tropa.");
+        }
+    }
+
+    public void validarQuantidadeTropas(Integer quantidadeTropas, Territorio territorio) {
+        final Integer totalTropas = territorio.getTotalTropas(tropas);
+        if (totalTropas == 1) {
+            throw new InvalidActionException("Território só possui 1 tropa.");
+        }
+
+        if (totalTropas - quantidadeTropas < 1) {
+            throw new InvalidActionException("Quantidade de tropas insuficientes!");
+        }
+    }
+
+    public void validarDonoDestino(Jogador jogador, Territorio destino) {
+        if (destino.getDono() == jogador) {
+            throw new InvalidActionException("Você não pode atacar seu próprio território!");
         }
     }
 }

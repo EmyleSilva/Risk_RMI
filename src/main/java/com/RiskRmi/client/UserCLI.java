@@ -33,8 +33,7 @@ public class UserCLI {
                         opcaoAtacar();
                         break;
                     case 3:
-                        System.out.println("TODO");
-//                        opcaoMovimentarTropas();
+                        opcaoMovimentarTropas();
                         break;
                     case 4:
                         System.out.println("TODO");
@@ -125,8 +124,20 @@ public class UserCLI {
         System.out.println("*********************************************************************");
 
     }
-//
-//    public void opcaoMovimentarTropas() {
-//        System.out.println("TODO!");
-//    }
+
+    public void opcaoMovimentarTropas() throws RemoteException{
+        exibirTerritorios();
+
+        String origem, destino;
+        int quantidadeTropas;
+
+        System.out.println("Digite o nome do território de origem das tropas: ");
+        origem = input.nextLine();
+        System.out.println("Digite o nome do território de destino (fortificar): ");
+        destino = input.nextLine();
+        System.out.println("Digite quantas tropas deseja mover: ");
+        quantidadeTropas = input.nextInt();
+
+        risk.movimentar(jogadorId, origem, destino, (Integer) quantidadeTropas);
+    }
 }
