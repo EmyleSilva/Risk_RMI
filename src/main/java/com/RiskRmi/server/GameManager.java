@@ -452,9 +452,8 @@ public class GameManager {
      * */
     public void proximaFase(int jogadorId) {
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
-
         if (fasesPorTurno.peek() == FasesJogo.MOVIMENTACAO) {
-            passarVez(jogadorAtualIndex);
+            passarVez(jogadorId);
         }else {
             fasesPorTurno.pop();
             notificador.callback(clientes, notificador.novaFase(jogadores.get(jogadorAtualIndex).getNome(), fasesPorTurno.peek()));
@@ -476,10 +475,22 @@ public class GameManager {
         return territorios;
     }
 
+
+    /**
+     * TODO: Adicionar possibilidade de ir fortificar territórios que não são diretamente vizinhos, mas filho de algum vizinho
+     * Realiza a movimentação de tropas (fortificação) após a fase de ataque.
+     *
+     * @param jogadorId O id jogador que deseja realizar a movimentação.
+     * @param origem O território de origem das tropas.
+     * @param destino O território que será fortificado.
+     * @param quantidadeTropas A quantidade de tropas que será movida.
+     * */
     public void movimentarTropas(int jogadorId, String origem, String destino, Integer quantidadeTropas) {
         Territorio tOrigem = territorios.get(origem);
         Territorio tDestino = territorios.get(destino);
         Jogador jogador = jogadores.get(jogadorId-1);
+
+        System.out.println("JOGADOR ID: " + jogadorId);
 
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
         validator.validarTerritorioJogador(tOrigem, jogador);
@@ -494,7 +505,7 @@ public class GameManager {
         tDestino.reorganizarTropas(tropas);
 
         notificador.callback(clientes, notificador.tropasMovimentadas(jogador.getNome(), origem, destino, tDestino.getTotalTropas(tropas)));
-        passarVez(jogadorId);
+        proximaFase(jogadorId);
     }
 
     /*******************************************************
@@ -522,13 +533,17 @@ public class GameManager {
      * */
     public void passarVez(int jogadorId) {
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
-
         if (ultimoDaRodada()) jogadorAtualIndex = 0;
         else jogadorAtualIndex++;
 
         final String nomeJogadorAtual = jogadores.get(jogadorAtualIndex).getNome();
         criarPilhaFases(false);
+
         notificador.callback(clientes, notificador.novaFase(nomeJogadorAtual, fasesPorTurno.peek()));
+    }
+
+    public void calcularBonificacao() {
+
     }
 
     /**

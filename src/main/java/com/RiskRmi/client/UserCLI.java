@@ -33,11 +33,10 @@ public class UserCLI {
                         opcaoAtacar();
                         break;
                     case 3:
-                        opcaoMovimentarTropas();
+                        opcaoPosicionarTropas();
                         break;
                     case 4:
-                        System.out.println("TODO");
-//                        exibirEstadoDoJogo();
+                        opcaoMovimentarTropas();
                         break;
                     case 0:
                         risk.passarVez(this.jogadorId);
@@ -122,6 +121,10 @@ public class UserCLI {
             System.out.println(t);
         }
         System.out.println("*********************************************************************");
+
+    }
+
+    public void opcaoPosicionarTropas() throws  RemoteException {
 
     }
 
