@@ -26,6 +26,32 @@ public class NotificacoesCallback {
         }
     }
 
+    public void callback(List<ClientCallback> clientes, Jogador jogador) {
+        for (ClientCallback c : clientes) {
+            try {
+                c.onEndGame(this.notificarFimJogo(jogador));
+            } catch (RemoteException e) {
+                System.out.println("Erro: " + e.getMessage() + " ao notificar cliente.");
+                clientes.remove(c);
+                System.out.println("Cliente removido do servidor.\n");
+            }
+        }
+    }
+
+    /**
+     * @return Mensagem de aviso: aguardando jogadores.
+     * */
+    public String notificarFimJogo(Jogador jogador) {
+        return """ 
+        ======================================================================
+        =                                                                    =
+        =                           FIM DE JOGO!!                            =
+        =                %s Conquistou todos os territórios.                 =
+        =                                                                    =
+        ======================================================================
+        """.formatted(jogador.getNome());
+    }
+
     /**
      * @return Mensagem de aviso: aguardando jogadores.
      * */

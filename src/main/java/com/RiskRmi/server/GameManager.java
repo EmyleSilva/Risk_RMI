@@ -103,50 +103,65 @@ public class GameManager {
      * */
     public void criarTerritorios() {
         territorios = new HashMap<>();
-
         territorios.put(Territorios.BRASIL.getNome(), new Territorio(Territorios.BRASIL,
-                List.of(Territorios.COLOMBIA, Territorios.VENEZUELA, Territorios.ARGELIA, Territorios.CONGO)
+                List.of(Territorios.COLOMBIA, Territorios.VENEZUELA)
         ));
 
         territorios.put(Territorios.VENEZUELA.getNome(), new Territorio(Territorios.VENEZUELA,
-                List.of(Territorios.COLOMBIA, Territorios.BRASIL, Territorios.ESPANHA)
+                List.of(Territorios.COLOMBIA, Territorios.BRASIL, Territorios.ARGELIA)
         ));
 
         territorios.put(Territorios.COLOMBIA.getNome(), new Territorio(Territorios.COLOMBIA,
-                List.of(Territorios.BRASIL, Territorios.VENEZUELA, Territorios.JAPAO)
+                List.of(Territorios.BRASIL, Territorios.VENEZUELA, Territorios.ARGELIA)
         ));
 
         territorios.put(Territorios.ARGELIA.getNome(), new Territorio(Territorios.ARGELIA,
-                List.of(Territorios.EGITO, Territorios.CONGO, Territorios.ESPANHA, Territorios.ALEMANHA)
+                List.of(Territorios.COLOMBIA, Territorios.VENEZUELA)
         ));
 
-        territorios.put(Territorios.EGITO.getNome(), new Territorio(Territorios.EGITO,
-                List.of(Territorios.ARGELIA, Territorios.QUENIA, Territorios.CHINA)
-        ));
+//        territorios.put(Territorios.BRASIL.getNome(), new Territorio(Territorios.BRASIL,
+//                List.of(Territorios.COLOMBIA, Territorios.VENEZUELA, Territorios.ARGELIA, Territorios.CONGO)
+//        ));
+//
+//        territorios.put(Territorios.VENEZUELA.getNome(), new Territorio(Territorios.VENEZUELA,
+//                List.of(Territorios.COLOMBIA, Territorios.BRASIL, Territorios.ESPANHA)
+//        ));
+//
+//        territorios.put(Territorios.COLOMBIA.getNome(), new Territorio(Territorios.COLOMBIA,
+//                List.of(Territorios.BRASIL, Territorios.VENEZUELA, Territorios.JAPAO)
+//        ));
+//
+//        territorios.put(Territorios.ARGELIA.getNome(), new Territorio(Territorios.ARGELIA,
+//                List.of(Territorios.EGITO, Territorios.CONGO, Territorios.ESPANHA, Territorios.ALEMANHA)
+//        ));
 
-        territorios.put(Territorios.CONGO.getNome(), new Territorio(Territorios.CONGO,
-                List.of(Territorios.ARGELIA, Territorios.QUENIA, Territorios.BRASIL)
-        ));
-
-        territorios.put(Territorios.QUENIA.getNome(), new Territorio(Territorios.QUENIA,
-                List.of(Territorios.EGITO, Territorios.CONGO, Territorios.CHINA)
-        ));
-
-        territorios.put(Territorios.ESPANHA.getNome(), new Territorio(Territorios.ESPANHA,
-                List.of(Territorios.VENEZUELA, Territorios.ARGELIA, Territorios.ALEMANHA)
-        ));
-
-        territorios.put(Territorios.ALEMANHA.getNome(), new Territorio(Territorios.ALEMANHA,
-                List.of(Territorios.ESPANHA, Territorios.ARGELIA, Territorios.CHINA)
-        ));
-
-        territorios.put(Territorios.CHINA.getNome(), new Territorio(Territorios.CHINA,
-                List.of(Territorios.EGITO, Territorios.ALEMANHA, Territorios.JAPAO, Territorios.QUENIA)
-        ));
-
-        territorios.put(Territorios.JAPAO.getNome(), new Territorio(Territorios.JAPAO,
-                List.of(Territorios.COLOMBIA, Territorios.CHINA)
-        ));
+//        territorios.put(Territorios.EGITO.getNome(), new Territorio(Territorios.EGITO,
+//                List.of(Territorios.ARGELIA, Territorios.QUENIA, Territorios.CHINA)
+//        ));
+//
+//        territorios.put(Territorios.CONGO.getNome(), new Territorio(Territorios.CONGO,
+//                List.of(Territorios.ARGELIA, Territorios.QUENIA, Territorios.BRASIL)
+//        ));
+//
+//        territorios.put(Territorios.QUENIA.getNome(), new Territorio(Territorios.QUENIA,
+//                List.of(Territorios.EGITO, Territorios.CONGO, Territorios.CHINA)
+//        ));
+//
+//        territorios.put(Territorios.ESPANHA.getNome(), new Territorio(Territorios.ESPANHA,
+//                List.of(Territorios.VENEZUELA, Territorios.ARGELIA, Territorios.ALEMANHA)
+//        ));
+//
+//        territorios.put(Territorios.ALEMANHA.getNome(), new Territorio(Territorios.ALEMANHA,
+//                List.of(Territorios.ESPANHA, Territorios.ARGELIA, Territorios.CHINA)
+//        ));
+//
+//        territorios.put(Territorios.CHINA.getNome(), new Territorio(Territorios.CHINA,
+//                List.of(Territorios.EGITO, Territorios.ALEMANHA, Territorios.JAPAO, Territorios.QUENIA)
+//        ));
+//
+//        territorios.put(Territorios.JAPAO.getNome(), new Territorio(Territorios.JAPAO,
+//                List.of(Territorios.COLOMBIA, Territorios.CHINA)
+//        ));
 
         for (String s : territorios.keySet()) {
             territorios.get(s).inicializarTropas(tropas);
@@ -166,16 +181,23 @@ public class GameManager {
                 4));
 
         continentes.add(new Continente("Africa",
-                List.of(territorios.get(Territorios.ARGELIA.getNome()), territorios.get(Territorios.EGITO.getNome()), territorios.get(Territorios.CONGO.getNome()), territorios.get(Territorios.QUENIA.getNome())),
+                List.of(territorios.get(Territorios.ARGELIA.getNome())),
                 5));
-
-        continentes.add(new Continente("Europa",
-                List.of(territorios.get(Territorios.ESPANHA.getNome()), territorios.get(Territorios.ALEMANHA.getNome())),
-                2));
-
-        continentes.add(new Continente("Asia",
-                List.of(territorios.get(Territorios.CHINA.getNome()), territorios.get(Territorios.JAPAO.getNome())),
-                2));
+//        continentes.add(new Continente("America",
+//                List.of(territorios.get(Territorios.BRASIL.getNome()), territorios.get(Territorios.VENEZUELA.getNome()), territorios.get(Territorios.COLOMBIA.getNome())),
+//                4));
+//
+//        continentes.add(new Continente("Africa",
+//                List.of(territorios.get(Territorios.ARGELIA.getNome()), territorios.get(Territorios.EGITO.getNome()), territorios.get(Territorios.CONGO.getNome()), territorios.get(Territorios.QUENIA.getNome())),
+//                5));
+//
+//        continentes.add(new Continente("Europa",
+//                List.of(territorios.get(Territorios.ESPANHA.getNome()), territorios.get(Territorios.ALEMANHA.getNome())),
+//                2));
+//
+//        continentes.add(new Continente("Asia",
+//                List.of(territorios.get(Territorios.CHINA.getNome()), territorios.get(Territorios.JAPAO.getNome())),
+//                2));
     }
 
     /**
@@ -276,9 +298,9 @@ public class GameManager {
      * */
     public Integer calcularTropasIniciais(int quantidadeJogadores) {
         switch (quantidadeJogadores) {
-            case 2: return 20;
-            case 3: return 15;
-            case 4: return 10;
+            case 2: return 10;
+//            case 3: return 15;
+//            case 4: return 10;
             default: throw new IllegalArgumentException();
         }
     }
@@ -366,6 +388,7 @@ public class GameManager {
     public void atacar(int jogadorId, String origem, String destino) {
         Territorio territorioOrigem = territorios.get(origem);
         Territorio territorioDestino = territorios.get(destino);
+
         Jogador jogador = jogadores.get(jogadorId-1);
         Jogador jogadorAtacado = territorioDestino.getDono();
 
@@ -435,6 +458,15 @@ public class GameManager {
         notificador.callback(clientes, notificador.notificarResultadoAtaque(mensagem));
 
         System.out.println("Ataque Finalizado...");
+
+        verificarFimJogo(jogadorId);
+    }
+
+    public void verificarFimJogo(int jogadorId) {
+        Jogador jogador = jogadores.get(jogadorId - 1);
+        if (jogador.getTerritorios().size() == this.territorios.size()) {
+            notificador.callback(clientes, jogador);
+        }
     }
 
     /**

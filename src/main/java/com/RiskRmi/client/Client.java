@@ -30,7 +30,7 @@ public class Client {
             user = new UserCLI(risk);
 
             /** Cria um objeto de callback*/
-            ClientCallback callback = new ClientCallbackImpl();
+            ClientCallback callback = new ClientCallbackImpl(user);
 
             /** Registra um novo jogador juntamente com o objeto de callback para o servidor*/
             jogadorId = risk.registrarJogador(nomeJogador, callback);
@@ -38,11 +38,9 @@ public class Client {
 
             user.setJogadorId(jogadorId);
 
-            Thread.sleep(3000);
+            user.iniciarJogo();
 
-            user.controladorJogo();
-
-        }catch (RemoteException | NotBoundException | MalformedURLException | InterruptedException e) {
+        }catch (RemoteException | NotBoundException | MalformedURLException e) {
             System.out.println(e.getMessage());
         }
     }

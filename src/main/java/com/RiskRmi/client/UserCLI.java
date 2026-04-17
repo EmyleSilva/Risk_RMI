@@ -8,23 +8,43 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
-public class UserCLI {
+public class UserCLI implements Runnable{
 
     private Scanner input = new Scanner(System.in);
     private int jogadorId;
     private int opcaoMenu;
     private GameService risk;
+    private boolean jogoAtivo = true;
+    private Thread clienteThread;
 
     public UserCLI(GameService risk) {
         this.risk = risk;
+    }
+
+    public void iniciarJogo() {
+        clienteThread = new Thread(this);
+        clienteThread.start();
+    }
+
+    public void encerrarJogo(String mensagem) {
+        System.out.println(mensagem);
+
+        jogoAtivo = false;
+
+        if (clienteThread != null) {
+            clienteThread.interrupt();
+        }
+
+        input.close();
     }
 
     public void setJogadorId(int jogadorId) {
         this.jogadorId = jogadorId;
     }
 
-    public void controladorJogo() throws RemoteException{
-        while (true) {
+    @Override
+    public void run() {
+        while (jogoAtivo) {
             try {
                 exibirMenuPrincipal();
                 switch (this.opcaoMenu) {
@@ -46,7 +66,7 @@ public class UserCLI {
                     default:
                         System.out.println("Opção Inválida!");
                 }
-            }catch (InvalidActionException e) {
+            }catch (InvalidActionException | RemoteException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -107,7 +127,7 @@ public class UserCLI {
             input.nextLine(); //Limpar o buffer.
         }
 
-        risk.passarFase(jogadorId);
+        if (jogoAtivo) risk.passarFase(jogadorId);
     }
 
     public void exibirTerritorios() throws RemoteException{
