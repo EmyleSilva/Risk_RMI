@@ -50,15 +50,6 @@ public class GameManager {
     }
 
     /**
-     * Remove um cliente do servidor (para evitar erros caso o cliente caia)
-     * @param cliente Cliente a ser removido.
-     * */
-    public void removerCliente(ClientCallback cliente) {
-        clientes.remove(cliente);
-        System.out.println("Cliente removido da lista!\n");
-    }
-
-    /**
      * Atualiza a flag de sinalização de inicio do jogo quando a quantidade mínima de jogadores
      * é antigida.
      * Além disso, inicia o processo de criação do jogo através da chamada do metodo criarJogo()
@@ -683,91 +674,13 @@ public class GameManager {
         if (totalTropas >= 2) return 2;
         return 1;
     }
+
     /*******************************************************
      *                GETTERS E SETTERS
      *******************************************************/
-    public Map<String, Territorio> getTerritorios() {
-        return territorios;
-    }
-
-    public void setTerritorios(Map<String, Territorio> territorios) {
-        this.territorios = territorios;
-    }
 
     public List<Jogador> getJogadores() {
         return jogadores;
-    }
-
-    public void setJogadores(List<Jogador> jogadores) {
-        this.jogadores = jogadores;
-    }
-
-    public List<Continente> getContinentes() {
-        return continentes;
-    }
-
-    public void setContinentes(List<Continente> continentes) {
-        this.continentes = continentes;
-    }
-
-    public Stack<FasesJogo> getFasesPorTurno() {
-        return fasesPorTurno;
-    }
-
-    public void setFasesPorTurno(Stack<FasesJogo> fasesPorTurno) {
-        this.fasesPorTurno = fasesPorTurno;
-    }
-
-    public List<Integer> getAtaquesResultados() {
-        return ataquesResultados;
-    }
-
-    public void setAtaquesResultados(List<Integer> ataquesResultados) {
-        this.ataquesResultados = ataquesResultados;
-    }
-
-    public List<Integer> getDefesasResultados() {
-        return defesasResultados;
-    }
-
-    public void setDefesasResultados(List<Integer> defesasResultados) {
-        this.defesasResultados = defesasResultados;
-    }
-
-    public Map<String, Tropa> getTropas() {
-        return tropas;
-    }
-
-    public void setTropas(Map<String, Tropa> tropas) {
-        this.tropas = tropas;
-    }
-
-    public List<Carta> getBaralho() {
-        return baralho;
-    }
-
-    public void setBaralho(List<Carta> baralho) {
-        this.baralho = baralho;
-    }
-
-    public int getJogadorAtualIndex() {
-        return jogadorAtualIndex;
-    }
-
-    public void setJogadorAtualIndex(int jogadorAtualIndex) {
-        this.jogadorAtualIndex = jogadorAtualIndex;
-    }
-
-    public int getTAMANHO_BARALHO() {
-        return TAMANHO_BARALHO;
-    }
-
-    public Dado getDado() {
-        return dado;
-    }
-
-    public void setDado(Dado dado) {
-        this.dado = dado;
     }
 
     @Override

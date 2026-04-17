@@ -8,8 +8,6 @@ import java.util.Scanner;
 
 public class ClientCallbackImpl extends UnicastRemoteObject implements ClientCallback {
 
-    Scanner input = new Scanner(System.in);
-
     protected ClientCallbackImpl() throws RemoteException {
         super();
     }

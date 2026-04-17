@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class UserCLI {
 
     private Scanner input = new Scanner(System.in);
-    private String nomeJogador;
     private int jogadorId;
     private int opcaoMenu;
     private GameService risk;
@@ -49,12 +48,7 @@ public class UserCLI {
             }
         }
     }
-//
-//    public void exibirEstadoDoJogo() throws RemoteException{
-//        EstadoJogo estado = risk.getEstado();
-//        estado.estadoAtual();
-//    }
-//
+
     public void exibirMenuPrincipal() {
         System.out.println("==================== MENU ====================== ");
         System.out.println("Escolha uma opção abaixo: ");
@@ -144,8 +138,6 @@ public class UserCLI {
         if (escolha == 1) {
             System.out.println(risk.trocarCartas(jogadorId));
         }
-
-        escolha = 1;
 
         do {
             exibirTerritorios();
