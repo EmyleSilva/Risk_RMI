@@ -54,9 +54,9 @@ public class GameManager {
      * é antigida.
      * Além disso, inicia o processo de criação do jogo através da chamada do metodo criarJogo()
      * */
-    public void verificarInicioJogo(List<ClientCallback> clientes) {
+    public void verificarInicioJogo() {
         if (this.jogadores.size() >= MIN_JOGADORES && !jogoIniciado) {
-            criarJogo(clientes);
+            criarJogo();
             jogoIniciado = true;
             System.out.println("Jogo Iniciado!");
             notificador.callback(clientes, notificador.jogoIniciado());
@@ -75,7 +75,7 @@ public class GameManager {
      * Também é responsável por distribuir os territórios entre os jogadores conectados e definir a quantidade de
      * tropas iniciais de cada um.
      * */
-    public void criarJogo(List<ClientCallback> clientes) {
+    public void criarJogo() {
           criarTropas();
           criarTerritorios();
           criarContinentes();
@@ -232,7 +232,7 @@ public class GameManager {
     public void criarPilhaFases(Boolean inicioJogo) {
         if (inicioJogo) {
             fasesPorTurno.push(FasesJogo.POSICIONAMETO_INICAL);
-        }else if (fasesPorTurno.peek() != FasesJogo.POSICIONAMETO_INICAL) {
+        }else {
             fasesPorTurno.clear();
             fasesPorTurno.push(FasesJogo.MOVIMENTACAO);
             fasesPorTurno.push(FasesJogo.ATAQUE);
@@ -240,10 +240,6 @@ public class GameManager {
 
             //Aciona o calculo de bonificação de inicio de turno do jogador atual.
             calcularBonificacao(jogadores.get(jogadorAtualIndex).getId());
-        }else {
-            fasesPorTurno.clear();
-            fasesPorTurno.push(FasesJogo.MOVIMENTACAO);
-            fasesPorTurno.push(FasesJogo.ATAQUE);
         }
     }
 

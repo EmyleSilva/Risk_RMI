@@ -37,7 +37,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         jogador.setId(manager.getJogadores().indexOf(jogador)+1);
         System.out.println("Jogador Conectado: " + nome);
 
-        manager.verificarInicioJogo(clientes);
+        manager.verificarInicioJogo();
         return jogador.getId();
     }
 

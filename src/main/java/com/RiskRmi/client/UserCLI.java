@@ -124,9 +124,14 @@ public class UserCLI {
         String territorio;
 
         System.out.println("**************************** CARTAS ****************************");
-        for (String c : cartas) {
-            System.out.println(c);
+        if (!cartas.isEmpty()) {
+            for (String c : cartas) {
+                System.out.println(c);
+            }
+        }else {
+            System.out.println("Deck de Cartas Vazio!");
         }
+
         System.out.println("\nVocê pode trocar 3 cartas iguais por bonificação");
         System.out.println("*********************************************************************");
 
