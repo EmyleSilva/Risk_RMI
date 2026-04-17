@@ -27,15 +27,16 @@ public class Client {
 
             risk = (GameService) Naming.lookup(name);
 
-            /** Cria um objeto de callback e o envia para registro no servidor */
-            ClientCallback callback = new ClientCallbackImpl();
-            risk.registrarCliente(callback);
+            user = new UserCLI(risk);
 
-            /** Registra um novo jogador */
-            jogadorId = risk.registrarJogador(nomeJogador);
+            /** Cria um objeto de callback*/
+            ClientCallback callback = new ClientCallbackImpl();
+
+            /** Registra um novo jogador juntamente com o objeto de callback para o servidor*/
+            jogadorId = risk.registrarJogador(nomeJogador, callback);
             System.out.println("Bem Vindo ao Risk," + nomeJogador + "! Seu id é: " + jogadorId);
 
-            user = new UserCLI(risk, jogadorId);
+            user.setJogadorId(jogadorId);
 
             Thread.sleep(3000);
 

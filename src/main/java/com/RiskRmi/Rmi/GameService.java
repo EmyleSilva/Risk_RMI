@@ -9,13 +9,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface GameService extends Remote {
-    /**
-     * Registro de cliente para callbacks do servidor.
-     *
-     * @param cliente Novo cliente a ser registrado.
-     * */
-    void registrarCliente(ClientCallback cliente) throws RemoteException;
-
     // Métodos de ações
 
     /**
@@ -28,7 +21,7 @@ public interface GameService extends Remote {
      * @param nome O nome do jogador.
      * @return Um inteiro identificador, gerado para o jogador registrado.
      * */
-    int registrarJogador(String nome) throws RemoteException, InvalidActionException;
+    int registrarJogador(String nome, ClientCallback cliente) throws RemoteException, InvalidActionException;
 
     /**
      * Realiza um posicionamento de tropas em um território, usada apenas na fase de posicionamento inical.

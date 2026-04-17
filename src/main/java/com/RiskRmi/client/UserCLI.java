@@ -15,8 +15,11 @@ public class UserCLI {
     private int opcaoMenu;
     private GameService risk;
 
-    public UserCLI(GameService risk, int jogadorId) {
+    public UserCLI(GameService risk) {
         this.risk = risk;
+    }
+
+    public void setJogadorId(int jogadorId) {
         this.jogadorId = jogadorId;
     }
 

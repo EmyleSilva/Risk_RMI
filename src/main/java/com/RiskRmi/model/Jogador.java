@@ -1,5 +1,6 @@
 package com.RiskRmi.model;
 
+import com.RiskRmi.Rmi.ClientCallback;
 import com.RiskRmi.enuns.TipoCarta;
 import com.RiskRmi.enuns.TipoTropa;
 import com.RiskRmi.exceptions.InvalidActionException;
@@ -18,8 +19,9 @@ public class Jogador implements Serializable {
     private Map<TipoTropa, Integer> tropas;
     private int tropasDisponiveis;
     private List<Carta> cartas = new ArrayList<>();
+    private ClientCallback clienteAssociado;
 
-    public Jogador(String nome) {
+    public Jogador(String nome, ClientCallback clienteAssociado) {
         this.nome = nome;
     }
 

@@ -26,14 +26,11 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
     }
 
     @Override
-    public void registrarCliente(ClientCallback cliente) throws RemoteException {
-        manager.registrarCliente(cliente);
-    }
-
-    @Override
-    public int registrarJogador(String nome) throws RemoteException, InvalidActionException {
-        Jogador jogador = new Jogador(nome);
+    public int registrarJogador(String nome, ClientCallback cliente) throws RemoteException, InvalidActionException {
+        Jogador jogador = new Jogador(nome, cliente);
         manager.getJogadores().add(jogador);
+        manager.registrarCliente(cliente);
+
         jogador.setId(manager.getJogadores().indexOf(jogador)+1);
         System.out.println("Jogador Conectado: " + nome);
 
@@ -119,7 +116,6 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         } catch (RemoteException | MalformedURLException | InvalidActionException e) {
 
             System.out.println(e.getMessage());
-//            e.printStackTrace();
         }
     }
 }
