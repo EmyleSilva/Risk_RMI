@@ -27,6 +27,13 @@ public class Jogador implements Serializable {
         cartas.add(carta);
     }
 
+    /**
+     * Verifica se o jogador possui cartas suficientes e se atende ao critério de bonificação por cartas.
+     * Se sim, retira as cartas da mão do jogador e as adiciona novamente no baralho.
+     * @param cartasJogo Os tipos de carta que estão no jogo.
+     * @param baralho O baralho do jogo.
+     * @return true quando acontece a troca, caso contrário, false.
+     * */
     public boolean retirarCartasBonus(Map<TipoCarta, Carta> cartasJogo, List<Carta> baralho) {
         Integer quantidadeCartas = quantidadeCartas();
 
@@ -53,16 +60,19 @@ public class Jogador implements Serializable {
         return false;
     }
 
+    /**
+     * @return A quantidade total de cartas do jogador.
+     * */
     public Integer quantidadeCartas() {
         return cartas.size();
     }
 
-    public void exibirCartas() {
-        for (Carta c : cartas) {
-            System.out.println(c);
-        }
-    }
-
+    /**
+     * Remove 3 cartas da mão do jogador e as adiciona novamente no baralho do jogo.
+     * @param tipo O tipo de carta que está sendo removida.
+     * @param cartasJogo Os tipos de carta que estão no jogo.
+     * @param baralho O baralho do jogo.
+     * */
     public void removerCartas(TipoCarta tipo, Map<TipoCarta, Carta> cartasJogo, List<Carta> baralho) {
         for (int i = 0; i < 3; i++) {
             baralho.add(cartasJogo.get(tipo));
@@ -110,6 +120,19 @@ public class Jogador implements Serializable {
      * */
     public void adicionarTerritorio(Territorio territorio) {
         territorios.add(territorio);
+    }
+
+    /**
+     * Cria uma lista com os nomes de todas as cartas do jogador.
+     * @return A lista com os nomes.
+     * */
+    public List<String> getCartasNomes() {
+        List<String> cartas = new ArrayList<>();
+        for (Carta c : this.cartas) {
+            cartas.add(c.getDescricao());
+        }
+
+        return cartas;
     }
 
 

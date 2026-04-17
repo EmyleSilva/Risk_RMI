@@ -19,4 +19,8 @@ public class Carta implements Serializable {
     public void setTipo(TipoCarta tipo) {
         this.tipo = tipo;
     }
+
+    public String getDescricao() {
+        return this.tipo.getDescricao();
+    }
 }

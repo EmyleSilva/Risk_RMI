@@ -30,10 +30,10 @@ public class UserCLI {
                         opcaoPosicionarTropasIniciais();
                         break;
                     case 2:
-                        opcaoAtacar();
+                        opcaoPosicionarTropas();
                         break;
                     case 3:
-                        opcaoPosicionarTropas();
+                        opcaoAtacar();
                         break;
                     case 4:
                         opcaoMovimentarTropas();
@@ -60,8 +60,8 @@ public class UserCLI {
         System.out.println("Escolha uma opção abaixo: ");
         System.out.println("""
                         1. Posicionar Tropas Iniciais \n
-                        2. Atacar\n
-                        3. Posicionar Tropas \n
+                        2. Posicionar Tropas \n
+                        3. Atacar \n
                         4. Movimentar Tropas \n
                         5. Mostrar Estado do Jogo \n
                         0. Passar a Vez\n
@@ -105,7 +105,7 @@ public class UserCLI {
 
             risk.atacar(jogadorId, origem, destino);
 
-            System.out.println("(1) - CONTINUAR ATAQUE\n (0) - IR PARA PRÓXIMA FASE\n");
+            System.out.println("(1) - CONTINUAR ATAQUE\n(0) - IR PARA PRÓXIMA FASE\n");
             continuarAtaque = input.nextInt();
             input.nextLine(); //Limpar o buffer.
         }
@@ -125,7 +125,46 @@ public class UserCLI {
     }
 
     public void opcaoPosicionarTropas() throws  RemoteException {
+        List<String> cartas = risk.buscarCartasJogador(jogadorId);
+        int quantidadeTropas = 0;
+        String territorio;
 
+        System.out.println("**************************** CARTAS ****************************");
+        for (String c : cartas) {
+            System.out.println(c);
+        }
+        System.out.println("\nVocê pode trocar 3 cartas iguais por bonificação");
+        System.out.println("*********************************************************************");
+
+        int escolha = 0;
+        System.out.println("\nDeseja trocar cartas por bonificação?\n(0) Não\n(1) Sim");
+        escolha = input.nextInt();
+        input.nextLine();
+
+        if (escolha == 1) {
+            System.out.println(risk.trocarCartas(jogadorId));
+        }
+
+        escolha = 1;
+
+        do {
+            exibirTerritorios();
+            System.out.println("Você possui " + risk.quantidadeTropasDisponiveis(jogadorId) + " tropas disponíveis");
+            System.out.println("Digite o nome do território ");
+            territorio = input.nextLine();
+
+            System.out.println("Digite quantas tropas deseja posicionar no território: ");
+            quantidadeTropas = input.nextInt();
+            input.nextLine();
+
+            risk.posicionarTropas(jogadorId, territorio, (Integer) quantidadeTropas);
+
+            System.out.println("(1) - CONTINUAR POSICIONAMENTO\n(0) - IR PARA PRÓXIMA FASE");
+            escolha = input.nextInt();;
+            input.nextLine();
+        }while (escolha == 1);
+
+        risk.passarFase(jogadorId);
     }
 
     public void opcaoMovimentarTropas() throws RemoteException{

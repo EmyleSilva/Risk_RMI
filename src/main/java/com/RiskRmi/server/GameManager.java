@@ -5,6 +5,7 @@ import com.RiskRmi.enuns.FasesJogo;
 import com.RiskRmi.enuns.Territorios;
 import com.RiskRmi.enuns.TipoCarta;
 import com.RiskRmi.enuns.TipoTropa;
+import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.*;
 
 import java.util.*;
@@ -233,6 +234,8 @@ public class GameManager {
      * Se acabou de sair da fase de posicionamento Incial, não existe bonificação de tropas, então empilha apenas ATAQUE E MOVIMENTAÇÃO
      * Caso contrário, se trata de um turno normal, então empilha as fases de POSICIONAMENTO, ATAQUE e MOVIMENTAÇÃO.
      *
+     * Quando está em um turno comum, também aciona o calculo do bônus do jogador atual.
+     *
      * @param inicioJogo Flag que indica se é ou não inicio do jogo.
      * */
     public void criarPilhaFases(Boolean inicioJogo) {
@@ -243,6 +246,9 @@ public class GameManager {
             fasesPorTurno.push(FasesJogo.MOVIMENTACAO);
             fasesPorTurno.push(FasesJogo.ATAQUE);
             fasesPorTurno.push(FasesJogo.POSCIONAMENTO);
+
+            //Aciona o calculo de bonificação de inicio de turno do jogador atual.
+            calcularBonificacao(jogadores.get(jogadorAtualIndex).getId());
         }else {
             fasesPorTurno.clear();
             fasesPorTurno.push(FasesJogo.MOVIMENTACAO);
@@ -490,9 +496,8 @@ public class GameManager {
         Territorio tDestino = territorios.get(destino);
         Jogador jogador = jogadores.get(jogadorId-1);
 
-        System.out.println("JOGADOR ID: " + jogadorId);
-
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarFaseAtual(fasesPorTurno, FasesJogo.MOVIMENTACAO);
         validator.validarTerritorioJogador(tOrigem, jogador);
         validator.validarTerritorioJogador(tDestino, jogador);
         validator.validarVizinho(tOrigem, tDestino);
@@ -506,6 +511,14 @@ public class GameManager {
 
         notificador.callback(clientes, notificador.tropasMovimentadas(jogador.getNome(), origem, destino, tDestino.getTotalTropas(tropas)));
         proximaFase(jogadorId);
+    }
+
+    /**
+     * @return Retorna uma lista com todas as cartas que o jogador possui.
+     * */
+    public List<String> buscarCartasJogador(int jogadorId) {
+        Jogador jogador = jogadores.get(jogadorId-1);
+        return jogador.getCartasNomes();
     }
 
     /*******************************************************
@@ -542,8 +555,85 @@ public class GameManager {
         notificador.callback(clientes, notificador.novaFase(nomeJogadorAtual, fasesPorTurno.peek()));
     }
 
-    public void calcularBonificacao() {
+    /**
+     * Posiciona tropas em um território do jogador.
+     * @param jogadorId O jogador que realizou a requisição para posicionar as tropas.
+     * @param territorioNome O nome do território do jogador que deve ser fortificado.
+     * @param quantidadeTropas A quantidade de tropas a ser posicionada.
+     *
+     * */
+    public void posicionarTropas(int jogadorId, String territorioNome, Integer quantidadeTropas) {
+        Jogador jogador = jogadores.get(jogadorId-1);
+        Territorio territorio = territorios.get(territorioNome);
 
+        validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarFaseAtual(fasesPorTurno, FasesJogo.POSCIONAMENTO);
+        validator.validarTerritorioJogador(territorio, jogador);
+        validator.validarTropasDisponiveis(quantidadeTropas, jogador);
+
+        territorio.adicionarTropas(tropas, quantidadeTropas);
+        jogador.setTropasDisponiveis(jogador.getTropasDisponiveis()-quantidadeTropas);
+
+        territorio.reorganizarTropas(tropas);
+
+        notificador.callback(clientes, notificador.tropasAdicionadas(jogador.getNome(), territorioNome, territorio.getTotalTropas(tropas)));
+    }
+
+    /**
+     * Calcula o bônus por cartas do jogador.
+     * O jogador recebe 2 tropas sempre que tiver 3 cartas iguais para trocar.
+     *
+     * @param jogadorId O id do jogador que está iniciando um novo turno.
+     * @return Uma mensagem indicando se houve troca de cartas (ou o motivo de não ter ocorrido a troca).
+     * */
+    public String calcularBonusCartas(int jogadorId) {
+        Jogador jogador = jogadores.get(jogadorId-1);
+        String mensagem;
+
+        try{
+            if (jogador.retirarCartasBonus(tiposCartaJogo, baralho)) {
+                jogador.setTropasDisponiveis(jogador.getTropasDisponiveis()+2);
+                mensagem = "Cartas Trocadas!";
+            }else {
+                mensagem = "Você não possui 3 cartas iguais para trocar!";
+            }
+        }catch (InvalidActionException e) {
+            return e.getMessage();
+        }
+
+        return mensagem;
+    }
+
+    /**
+     * Calcula a bonificação de territórios e continentes do jogador.
+     * O total de tropas recebidas pelo jogador será:
+     *      > a quantidade de territórios que ele possiu, dividido por 3 (sendo sempre o mínimo de 3 tropas).
+     *      > o valor de bônus do continente para cada continente que ele domina.
+     *
+     * @param jogadorId O id do jogador que está iniciando um novo turno.
+     * */
+    public void calcularBonificacao(int jogadorId) {
+        Jogador jogador = jogadores.get(jogadorId-1);
+        int bonusTerritorio, bonusContinente = 0;
+        boolean pertenceAoJogador = true;
+
+        bonusTerritorio = jogador.getTerritorios().size() / 3;
+        if (bonusTerritorio < 3) bonusTerritorio = 3;
+
+        for (Continente c : this.continentes) {
+            for (Territorio t : c.getTerritorios()) {
+                if (t.getDono() != jogador) {
+                    pertenceAoJogador = false;
+                    break;
+                }
+            }
+            if (pertenceAoJogador) {
+                bonusContinente += c.getBonus();
+            }else {
+                pertenceAoJogador = true;
+            }
+        }
+        jogador.setTropasDisponiveis(jogador.getTropasDisponiveis()+bonusTerritorio+bonusContinente);
     }
 
     /**

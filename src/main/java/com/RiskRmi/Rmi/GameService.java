@@ -1,6 +1,7 @@
 package com.RiskRmi.Rmi;
 
 import com.RiskRmi.exceptions.InvalidActionException;
+import com.RiskRmi.model.Carta;
 import com.RiskRmi.model.Territorio;
 
 import java.rmi.Remote;
@@ -107,4 +108,27 @@ public interface GameService extends Remote {
      * @param destino O território de destino.
      * */
     void movimentar(int jogadorId, String origem, String destino, Integer quantidadeTropas) throws RemoteException, InvalidActionException;
+
+    /**
+     * Busca o nome de todas as cartas que o jogador possui.
+     * @param jogadorId O id do jogador.
+     * @return Uma lista com os nomes de todas as cartas.
+     * */
+    List<String> buscarCartasJogador(int jogadorId) throws RemoteException, InvalidActionException;
+
+    /**
+     * Realiza o calculo de bonificação por troca de cartas, sempre que o jogador possui
+     * cartas suficientes e atende ao critério de troca (3 cartas iguais).
+     * @param jogadorId O id do jogador.
+     * @return Uma mensagem indicando se houve ou não a bonificação por troca.
+     * */
+    String trocarCartas(int jogadorId) throws RemoteException, InvalidActionException;
+
+    /**
+     * Posiciona tropas de bonificação em um território do jogador.
+     * @param jogadorId O id do jogador.
+     * @param territorio O nome do território que o jogador deseja fortificar.
+     * @param quantidadeTropas A quantidade de tropas que será adicionada.
+     * */
+    void posicionarTropas(int jogadorId, String territorio, Integer quantidadeTropas) throws RemoteException, InvalidActionException;
 }

@@ -91,6 +91,21 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         manager.movimentarTropas(jogadorId, origem, destino, quantidadeTropas);
     }
 
+    @Override
+    public List<String> buscarCartasJogador(int jogadorId) throws RemoteException, InvalidActionException {
+        return manager.buscarCartasJogador(jogadorId);
+    }
+
+    @Override
+    public String trocarCartas(int jogadorId) throws RemoteException, InvalidActionException {
+        return manager.calcularBonusCartas(jogadorId);
+    }
+
+    @Override
+    public void posicionarTropas(int jogadorId, String territorio, Integer quantidadeTropas) throws RemoteException, InvalidActionException {
+        manager.posicionarTropas(jogadorId, territorio, quantidadeTropas);
+    }
+
     public static void main(String[] args) {
         try {
 //            System.setProperty("java.rmi.server.hostname", "192.168.15.7");
