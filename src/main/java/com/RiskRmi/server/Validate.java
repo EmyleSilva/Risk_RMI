@@ -94,4 +94,10 @@ public class Validate {
             throw new InvalidActionException("Você deve posicionar todas as suas tropas iniciais!");
         }
     }
+
+    public void validarPassarFaseInicial(Jogador jogadorAtual, int idUltimoJogador, FasesJogo faseAtual) {
+        if (faseAtual == FasesJogo.POSICIONAMETO_INICAL && ((jogadorAtual.getId() != idUltimoJogador) || jogadorAtual.getTropasDisponiveis() != 0)) {
+            throw new InvalidActionException("Você deve posicionar todas as suas tropas iniciais!");
+        }
+    }
 }

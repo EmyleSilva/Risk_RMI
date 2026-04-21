@@ -479,6 +479,7 @@ public class GameManager {
         if (fasesPorTurno.peek() == FasesJogo.MOVIMENTACAO) {
             passarVez(jogadorId);
         }else {
+            validator.validarPassarFaseInicial(jogadores.get(jogadorId-1), jogadores.getLast().getId(),fasesPorTurno.peek());
             fasesPorTurno.pop();
             notificador.callback(clientes, notificador.novaFase(jogadores.get(jogadorAtualIndex).getNome(), fasesPorTurno.peek()));
         }

@@ -48,6 +48,9 @@ public class UserCLI implements Runnable{
             try {
                 exibirMenuPrincipal();
                 switch (this.opcaoMenu) {
+                    case 0:
+                        System.out.println("TODO");
+                        break;
                     case 1:
                         opcaoPosicionarTropasIniciais();
                         break;
@@ -60,8 +63,14 @@ public class UserCLI implements Runnable{
                     case 4:
                         opcaoMovimentarTropas();
                         break;
-                    case 0:
+                    case 5:
+                        risk.passarFase(this.jogadorId);
+                        break;
+                    case 6:
                         risk.passarVez(this.jogadorId);
+                        break;
+                    case 7:
+                        System.out.println("TODO");
                         break;
                     default:
                         System.out.println("Opção Inválida!");
@@ -80,8 +89,10 @@ public class UserCLI implements Runnable{
                         2. Posicionar Tropas \n
                         3. Atacar \n
                         4. Movimentar Tropas \n
-                        5. Mostrar Estado do Jogo \n
-                        0. Passar a Vez\n
+                        5. Próxima Fase  \n
+                        6. Passar a vez \n
+                        7. Mostrar Estado do Jogo \n
+                        0. Desistir! \n
                         """);
         this.opcaoMenu = input.nextInt();
         input.nextLine(); //Limpar o buffer.
@@ -184,7 +195,7 @@ public class UserCLI implements Runnable{
             input.nextLine();
         }while (escolha == 1);
 
-        risk.passarFase(jogadorId);
+        if (jogoAtivo) risk.passarFase(jogadorId);
     }
 
     public void opcaoMovimentarTropas() throws RemoteException{
