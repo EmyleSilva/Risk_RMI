@@ -51,7 +51,7 @@ public class Validate {
 
     public void validarVizinho(Territorio origem, Territorio destino) {
         boolean encontrouVizinho = false;
-        Territorios destinoNome = destino.getNome();
+        Territorios destinoNome = destino.getNomeEnum();
 
         for (Territorios t : origem.getVizinhos()) {
             if (t == destinoNome) {

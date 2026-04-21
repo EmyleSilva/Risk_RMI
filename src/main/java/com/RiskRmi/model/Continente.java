@@ -31,7 +31,7 @@ public class Continente implements Serializable {
     public String getNomesTerritorios()  {
         String t = "";
         for (Territorio territorio : territorios) {
-            t = t + territorio.getNome().getNome() + ", ";
+            t = t + territorio.getNome() + ", ";
         }
         return t;
     }

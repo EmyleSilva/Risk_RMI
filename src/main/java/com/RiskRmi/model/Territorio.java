@@ -134,7 +134,11 @@ public class Territorio implements Serializable {
     }
 
     /** Getters e Setters */
-    public Territorios getNome() {
+    public String getNome() {
+        return nome.getNome();
+    }
+
+    public Territorios getNomeEnum() {
         return nome;
     }
 

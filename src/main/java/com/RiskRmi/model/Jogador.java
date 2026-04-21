@@ -90,7 +90,7 @@ public class Jogador implements Serializable {
     public List<String> buscarTerritorios() {
         List<String> nomesTerritorios = new ArrayList<>();
         for (Territorio t : territorios) {
-            nomesTerritorios.add(t.getNome().getNome());
+            nomesTerritorios.add(t.getNome());
         }
         return nomesTerritorios;
     }
@@ -108,7 +108,7 @@ public class Jogador implements Serializable {
         for (Territorio t : territorios) {
             Integer i = t.getTropas().get(infantaria);
             Integer c = t.getTropas().get(cavalaria) * cavalaria.getValor();
-            territoriosTropas.add("Território: " + t.getNome().getNome() + " | Tropas: infantaria(" + i + ") | cavalaria(" + c + ")");
+            territoriosTropas.add("Território: " + t.getNome() + " | Tropas: infantaria(" + i + ") | cavalaria(" + c + ")");
         }
 
         return territoriosTropas;

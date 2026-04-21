@@ -711,8 +711,9 @@ public class GameManager {
         return jogadores;
     }
 
-    /***
-     * TODO: Mudar o getNome() de territorio para não ficar redundante
+    /**
+     * Cria uma string com todas as informações importantes do estado atual do jogo.
+     * @return A string de estado do Jogo.
      * */
     public String exibirEstadoJogo() {
         String mensagem = "";
@@ -725,7 +726,7 @@ public class GameManager {
 
         for (String t : territorios.keySet()) {
             Territorio territorio = territorios.get(t);
-            mensagem = mensagem + "Dono: " + territorio.getDono().getNome() + " | Território: " + territorio.getNome().getNome() + " | Vizinhos: " + territorio.getVizinhos() + " Tropas: " + territorio.exibirTropas(tropas) + "\n";
+            mensagem = mensagem + "Dono: " + territorio.getDono().getNome() + " | Território: " + territorio.getNome() + " | Vizinhos: " + territorio.getVizinhos() + " Tropas: " + territorio.exibirTropas(tropas) + "\n";
         }
 
         mensagem = mensagem + """
