@@ -61,7 +61,7 @@ public class Validate {
         }
 
         if (!encontrouVizinho) {
-            throw new InvalidActionException("Você não pode atacar " + destinoNome.getNome() + ". Não são vizinhos!");
+            throw new InvalidActionException(origem.getNome() +" e " + destinoNome.getNome() + " não são vizinhos!");
         }
     }
 

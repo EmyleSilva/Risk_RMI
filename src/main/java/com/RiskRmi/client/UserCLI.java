@@ -48,9 +48,6 @@ public class UserCLI implements Runnable{
             try {
                 exibirMenuPrincipal();
                 switch (this.opcaoMenu) {
-                    case 0:
-                        System.out.println("TODO");
-                        break;
                     case 1:
                         opcaoPosicionarTropasIniciais();
                         break;
@@ -92,7 +89,6 @@ public class UserCLI implements Runnable{
                         5. Próxima Fase  \n
                         6. Passar a vez \n
                         7. Mostrar Estado do Jogo \n
-                        0. Desistir! \n
                         """);
         this.opcaoMenu = input.nextInt();
         input.nextLine(); //Limpar o buffer.

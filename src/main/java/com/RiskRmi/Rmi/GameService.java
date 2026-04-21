@@ -123,5 +123,10 @@ public interface GameService extends Remote {
      * */
     void posicionarTropas(int jogadorId, String territorio, Integer quantidadeTropas) throws RemoteException, InvalidActionException;
 
+    /**
+     * Busca as informações do estado atual do jogo.
+     * Atualiza o jogador sobre os territórios, continentes, jogadores e informações gerais.
+     * @return Uma string com todas as informações do estado do jogo.
+     * */
     String buscarEstadoJogo() throws RemoteException;
 }

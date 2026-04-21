@@ -8,6 +8,7 @@ import com.RiskRmi.enums.TipoTropa;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.*;
 
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,18 @@ public class GameManager {
     public void registrarCliente(ClientCallback cliente) {
         clientes.add(cliente);
         System.out.println("Novo cliente registrado.\n");
+    }
+
+    /**
+     * Remove um jogador da partida, também retira retira o listener associado a ele.
+     * @param jogador O jogador que foi derrotado.
+     * @param mensagem Uma mensagem de fim de jogo para o jogador.
+     * */
+    public void removerJogadorCliente(Jogador jogador, String mensagem) throws RemoteException{
+        ClientCallback clienteAssociado = jogador.getClienteAssociado();
+        clienteAssociado.onEndGame(mensagem);
+        clientes.remove(clienteAssociado);
+        jogadores.remove(jogador);
     }
 
     /**
@@ -298,9 +311,9 @@ public class GameManager {
      * */
     public Integer calcularTropasIniciais(int quantidadeJogadores) {
         switch (quantidadeJogadores) {
-            case 2: return 10;
-//            case 3: return 15;
-//            case 4: return 10;
+            case 2: return 20;
+            case 3: return 15;
+            case 4: return 10;
             default: throw new IllegalArgumentException();
         }
     }
@@ -318,7 +331,7 @@ public class GameManager {
      * @param quantidadeTropas A quantidade de tropas que deve ser adicionada.
      * */
     public void posicionamentoInicial(int jogadorId, String nomeTerritorio, int quantidadeTropas) {
-        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         Territorio territorio = territorios.get(nomeTerritorio);
 
         validator.validarFaseAtual(fasesPorTurno, FasesJogo.POSICIONAMETO_INICAL);
@@ -349,7 +362,7 @@ public class GameManager {
      * @return Uma lista com todos os nomes e tropas dos territorios.
      * */
     public List<String> buscarTerritoriosTropasJogador(int jogadorId) {
-        return jogadores.get(jogadorId-1).buscarTerritoriosTropas(tropas);
+        return jogadores.get(buscarPosicaoJogador(jogadorId)).buscarTerritoriosTropas(tropas);
     }
 
     /**
@@ -358,7 +371,7 @@ public class GameManager {
      * @return A quantidade de tropas disponiveis.
      * */
     public Integer buscarTropasDisponiveisJogador(int jogadorId) {
-        return jogadores.get(jogadorId-1).getTropasDisponiveis();
+        return jogadores.get(buscarPosicaoJogador(jogadorId)).getTropasDisponiveis();
     }
 
     /**
@@ -385,11 +398,11 @@ public class GameManager {
      * @param origem Nome do território do jogador atacante.
      * @param destino Nome do território que o jogador quer atacar.
      * */
-    public void atacar(int jogadorId, String origem, String destino) {
+    public void atacar(int jogadorId, String origem, String destino) throws RemoteException{
         Territorio territorioOrigem = territorios.get(origem);
         Territorio territorioDestino = territorios.get(destino);
 
-        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         Jogador jogadorAtacado = territorioDestino.getDono();
 
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
@@ -460,12 +473,31 @@ public class GameManager {
         System.out.println("Ataque Finalizado...");
 
         verificarFimJogo(jogadorId);
+        verificarRemoverJogador(jogadorAtacado);
     }
 
+    /**
+     * Verifica se o Jogador que realizou o ataque mais recente possui todos os territórios do jogo.
+     * Caso sim, encerra o jogo!
+     * @param jogadorId O id do jogador que realizou o último ataque.
+     * */
     public void verificarFimJogo(int jogadorId) {
-        Jogador jogador = jogadores.get(jogadorId - 1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         if (jogador.getTerritorios().size() == this.territorios.size()) {
             notificador.callback(clientes, jogador);
+        }
+    }
+
+    /**
+     * Verifica se, após um ataque, o jogador ainda possui territórios.
+     * Se não possuir, significa que foi derrotado e é removido do jogo.
+     * Todos os jogadores são notificados da derrota do jogador.
+     * @param jogador O último jogador atacado.
+     * */
+    public void verificarRemoverJogador(Jogador jogador) throws RemoteException{
+        if (jogador.getTerritorios().isEmpty()) {
+            notificador.callback(clientes, notificador.jogadorDerrotado(jogador.getNome()));
+            removerJogadorCliente(jogador, "Você perdeu!");
         }
     }
 
@@ -480,7 +512,7 @@ public class GameManager {
         if (fasesPorTurno.peek() == FasesJogo.MOVIMENTACAO) {
             passarVez(jogadorId);
         }else {
-            validator.validarPassarFaseInicial(jogadores.get(jogadorId-1), jogadores.getLast().getId(),fasesPorTurno.peek());
+            validator.validarPassarFaseInicial(jogadores.get(buscarPosicaoJogador(jogadorId)), jogadores.getLast().getId(),fasesPorTurno.peek());
             fasesPorTurno.pop();
             notificador.callback(clientes, notificador.novaFase(jogadores.get(jogadorAtualIndex).getNome(), fasesPorTurno.peek()));
         }
@@ -514,7 +546,7 @@ public class GameManager {
     public void movimentarTropas(int jogadorId, String origem, String destino, Integer quantidadeTropas) {
         Territorio tOrigem = territorios.get(origem);
         Territorio tDestino = territorios.get(destino);
-        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
 
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
         validator.validarFaseAtual(fasesPorTurno, FasesJogo.MOVIMENTACAO);
@@ -537,7 +569,7 @@ public class GameManager {
      * @return Retorna uma lista com todas as cartas que o jogador possui.
      * */
     public List<String> buscarCartasJogador(int jogadorId) {
-        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         return jogador.getCartasNomes();
     }
 
@@ -551,7 +583,7 @@ public class GameManager {
      * @return Uma lista com todos os nomes dos territorios.
      * */
     public List<String> buscarTerritoriosJogador(int jogadorId) {
-        return jogadores.get(jogadorId-1).buscarTerritorios();
+        return jogadores.get(buscarPosicaoJogador(jogadorId)).buscarTerritorios();
     }
 
     /**
@@ -564,7 +596,7 @@ public class GameManager {
      * */
     public void passarVez(int jogadorId) {
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
-        validator.validarPassarVezInicial(jogadores.get(jogadorId-1), fasesPorTurno.peek());
+        validator.validarPassarVezInicial(jogadores.get(buscarPosicaoJogador(jogadorId)), fasesPorTurno.peek());
         if (ultimoDaRodada()) jogadorAtualIndex = 0;
         else jogadorAtualIndex++;
 
@@ -582,7 +614,7 @@ public class GameManager {
      *
      * */
     public void posicionarTropas(int jogadorId, String territorioNome, Integer quantidadeTropas) {
-        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         Territorio territorio = territorios.get(territorioNome);
 
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
@@ -606,7 +638,7 @@ public class GameManager {
      * @return Uma mensagem indicando se houve troca de cartas (ou o motivo de não ter ocorrido a troca).
      * */
     public String calcularBonusCartas(int jogadorId) {
-        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         String mensagem;
 
         try{
@@ -632,7 +664,7 @@ public class GameManager {
      * @param jogadorId O id do jogador que está iniciando um novo turno.
      * */
     public void calcularBonificacao(int jogadorId) {
-        Jogador jogador = jogadores.get(jogadorId-1);
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         int bonusTerritorio, bonusContinente = 0;
         boolean pertenceAoJogador = true;
 
@@ -701,6 +733,20 @@ public class GameManager {
 
         if (totalTropas >= 2) return 2;
         return 1;
+    }
+
+    public int buscarPosicaoJogador(int jogadorId) {
+        int index = -1;
+
+        for (int i = 0; i < jogadores.size(); i++) {
+            Jogador j = jogadores.get(i);
+            if (j.getId() == jogadorId) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
     }
 
     /*******************************************************

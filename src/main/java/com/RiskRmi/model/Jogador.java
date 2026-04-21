@@ -179,6 +179,10 @@ public class Jogador implements Serializable {
         this.tropasDisponiveis = quantidadeTropasDisponiveis;
     }
 
+    public ClientCallback getClienteAssociado() {
+        return clienteAssociado;
+    }
+
     public List<Carta> getCartas() {
         return cartas;
     }

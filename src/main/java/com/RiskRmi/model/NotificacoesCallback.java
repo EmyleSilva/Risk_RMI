@@ -3,6 +3,7 @@ package com.RiskRmi.model;
 import com.RiskRmi.Rmi.ClientCallback;
 import com.RiskRmi.enums.FasesJogo;
 
+import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -165,5 +166,13 @@ public class NotificacoesCallback {
                                       %s >> %s (%d tropas).                     
                 ======================================================================
                 """.formatted(nome, territorioOrigem, territorioDestino, totalTropas);
+    }
+
+    public String jogadorDerrotado(String nomeJogador) {
+        return """
+                ======================================================================                                                                                            
+                                  O Jogador %s foi derrotado!                  
+                ======================================================================
+                """.formatted(nomeJogador);
     }
 }
