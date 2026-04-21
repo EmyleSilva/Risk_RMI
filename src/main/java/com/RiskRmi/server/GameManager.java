@@ -1,10 +1,10 @@
 package com.RiskRmi.server;
 
 import com.RiskRmi.Rmi.ClientCallback;
-import com.RiskRmi.enuns.FasesJogo;
-import com.RiskRmi.enuns.Territorios;
-import com.RiskRmi.enuns.TipoCarta;
-import com.RiskRmi.enuns.TipoTropa;
+import com.RiskRmi.enums.FasesJogo;
+import com.RiskRmi.enums.Territorios;
+import com.RiskRmi.enums.TipoCarta;
+import com.RiskRmi.enums.TipoTropa;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.*;
 

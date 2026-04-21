@@ -1,4 +1,4 @@
-package com.RiskRmi.enuns;
+package com.RiskRmi.enums;
 
 public enum Territorios {
     BRASIL("Brasil"),

@@ -1,15 +1,14 @@
 package com.RiskRmi.model;
 
 import com.RiskRmi.Rmi.ClientCallback;
-import com.RiskRmi.enuns.TipoCarta;
-import com.RiskRmi.enuns.TipoTropa;
+import com.RiskRmi.enums.TipoCarta;
+import com.RiskRmi.enums.TipoTropa;
 import com.RiskRmi.exceptions.InvalidActionException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Jogador implements Serializable {
 

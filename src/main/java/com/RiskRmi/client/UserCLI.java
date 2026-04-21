@@ -70,7 +70,6 @@ public class UserCLI implements Runnable{
                         risk.passarVez(this.jogadorId);
                         break;
                     case 7:
-//                        System.out.println("TODO");
                         System.out.println(risk.buscarEstadoJogo());
                         break;
                     default:

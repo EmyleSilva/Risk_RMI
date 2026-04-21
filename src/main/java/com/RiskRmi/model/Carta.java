@@ -1,6 +1,6 @@
 package com.RiskRmi.model;
 
-import com.RiskRmi.enuns.TipoCarta;
+import com.RiskRmi.enums.TipoCarta;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
 package com.RiskRmi.server;
 
-import com.RiskRmi.enuns.FasesJogo;
-import com.RiskRmi.enuns.Territorios;
+import com.RiskRmi.enums.FasesJogo;
+import com.RiskRmi.enums.Territorios;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.Jogador;
 import com.RiskRmi.model.Territorio;

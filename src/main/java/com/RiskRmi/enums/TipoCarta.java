@@ -1,14 +1,12 @@
-package com.RiskRmi.enuns;
+package com.RiskRmi.enums;
 
-public enum FasesJogo {
-    POSICIONAMETO_INICAL("POSICIONAMENTO_INICIAL"),
-    POSCIONAMENTO("POSICIONAMENTO"),
-    ATAQUE("ATAQUE"),
-    MOVIMENTACAO("MOVIMENTACAO");
+public enum TipoCarta {
+    INFANTARIA("CARTA: Infantaria"),
+    CAVALARIA("CARTA: Cavalaria");
 
     private String descricao;
 
-    FasesJogo(String descricao) {
+    TipoCarta(String descricao) {
         this.descricao = descricao;
     }
 

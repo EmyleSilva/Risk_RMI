@@ -1,7 +1,7 @@
 package com.RiskRmi.model;
 
-import com.RiskRmi.enuns.Territorios;
-import com.RiskRmi.enuns.TipoTropa;
+import com.RiskRmi.enums.Territorios;
+import com.RiskRmi.enums.TipoTropa;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package com.RiskRmi.model;
 
 import com.RiskRmi.Rmi.ClientCallback;
-import com.RiskRmi.enuns.FasesJogo;
+import com.RiskRmi.enums.FasesJogo;
 
 import java.rmi.RemoteException;
 import java.util.List;
