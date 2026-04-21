@@ -28,6 +28,14 @@ public class Continente implements Serializable {
         return territorios;
     }
 
+    public String getNomesTerritorios()  {
+        String t = "";
+        for (Territorio territorio : territorios) {
+            t = t + territorio.getNome().getNome() + ", ";
+        }
+        return t;
+    }
+
     public void setTerritorios(List<Territorio> territorios) {
         this.territorios = territorios;
     }
@@ -38,5 +46,14 @@ public class Continente implements Serializable {
 
     public void setBonus(int bonus) {
         this.bonus = bonus;
+    }
+
+    @Override
+    public String toString() {
+        return "Continente{" +
+                "nome='" + nome + '\'' +
+                ", territorios=" + territorios +
+                ", bonus=" + bonus +
+                '}';
     }
 }

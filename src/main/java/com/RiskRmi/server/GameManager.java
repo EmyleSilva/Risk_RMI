@@ -393,6 +393,7 @@ public class GameManager {
         Jogador jogadorAtacado = territorioDestino.getDono();
 
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarFaseAtual(fasesPorTurno, FasesJogo.ATAQUE);
         validator.validarDonoDestino(jogador, territorioDestino);
         validator.validarTerritorioJogador(territorioOrigem, jogador);
         validator.validarVizinho(territorioOrigem, territorioDestino);
@@ -710,18 +711,75 @@ public class GameManager {
         return jogadores;
     }
 
+    /***
+     * TODO: Mudar o getNome() de territorio para não ficar redundante
+     * */
+    public String exibirEstadoJogo() {
+        String mensagem = "";
+
+        mensagem = """
+                =========================================================================
+                                            Territórios
+                =========================================================================                             
+                """;
+
+        for (String t : territorios.keySet()) {
+            Territorio territorio = territorios.get(t);
+            mensagem = mensagem + "Dono: " + territorio.getDono().getNome() + " | Território: " + territorio.getNome().getNome() + " | Vizinhos: " + territorio.getVizinhos() + " Tropas: " + territorio.exibirTropas(tropas) + "\n";
+        }
+
+        mensagem = mensagem + """
+                =========================================================================
+                                            Continentes
+                =========================================================================                             
+                """;
+
+        for (Continente c : continentes) {
+            mensagem = mensagem + "Nome: " + c.getNome() + " | Territórios: [" + c.getNomesTerritorios() + "] | Bonus: " + c.getBonus() + "\n";
+        }
+
+        mensagem = mensagem + """
+                =========================================================================
+                                            Jogadores
+                =========================================================================                             
+                """;
+
+        for (Jogador j : jogadores) {
+            mensagem = mensagem + "Nome: " + j.getNome() + " | Quantidade Territórios: " + j.getTerritorios().size() + " | Tropas: \n" + j.buscarTerritoriosTropas(tropas) + "\n\n";
+        }
+
+        mensagem = mensagem + """
+                =========================================================================
+                                            GERAL                                        
+                =========================================================================                             
+                """;
+        mensagem = mensagem + " Quantidade de cartas no Baralho: " + baralho.size() +
+                   "\n Fase Atual: " + fasesPorTurno.peek() +
+                   "\n Jogador Atual: " + jogadores.get(jogadorAtualIndex).getNome();
+
+        return mensagem;
+    }
+
     @Override
     public String toString() {
         return "GameManager{" +
-                "jogoIniciado=" + jogoIniciado +
-                ", baralho=" + baralho +
-                ", tropas=" + tropas +
-                ", defesasResultados=" + defesasResultados +
-                ", ataquesResultados=" + ataquesResultados +
-                ", fasesPorTurno=" + fasesPorTurno +
-                ", continentes=" + continentes +
+                "territorios=" + territorios +
                 ", jogadores=" + jogadores +
-                ", territorios=" + territorios +
+                ", continentes=" + continentes +
+                ", fasesPorTurno=" + fasesPorTurno +
+                ", ataquesResultados=" + ataquesResultados +
+                ", defesasResultados=" + defesasResultados +
+                ", tropas=" + tropas +
+                ", baralho=" + baralho +
+                ", jogadorAtualIndex=" + jogadorAtualIndex +
+                ", TAMANHO_BARALHO=" + TAMANHO_BARALHO +
+                ", dado=" + dado +
+                ", jogoIniciado=" + jogoIniciado +
+                ", MIN_JOGADORES=" + MIN_JOGADORES +
+                ", clientes=" + clientes +
+                ", notificador=" + notificador +
+                ", validator=" + validator +
+                ", tiposCartaJogo=" + tiposCartaJogo +
                 '}';
     }
 }

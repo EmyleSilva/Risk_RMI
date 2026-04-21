@@ -103,6 +103,11 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         manager.posicionarTropas(jogadorId, territorio, quantidadeTropas);
     }
 
+    @Override
+    public String buscarEstadoJogo() throws RemoteException {
+        return manager.exibirEstadoJogo();
+    }
+
     public static void main(String[] args) {
         try {
 //            System.setProperty("java.rmi.server.hostname", "192.168.15.7");

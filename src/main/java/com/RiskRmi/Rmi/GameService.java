@@ -122,4 +122,6 @@ public interface GameService extends Remote {
      * @param quantidadeTropas A quantidade de tropas que será adicionada.
      * */
     void posicionarTropas(int jogadorId, String territorio, Integer quantidadeTropas) throws RemoteException, InvalidActionException;
+
+    String buscarEstadoJogo() throws RemoteException;
 }

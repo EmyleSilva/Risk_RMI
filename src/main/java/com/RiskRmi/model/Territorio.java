@@ -166,6 +166,15 @@ public class Territorio implements Serializable {
         this.tropas = tropas;
     }
 
+    public String exibirTropas(Map<String, Tropa> tropasJogo) {
+        String mensagem = "";
+
+        for (String s : tropasJogo.keySet()) {
+            mensagem = mensagem + "{" + s + " | Quantidade: " + tropas.get(tropasJogo.get(s)) + "} ";
+        }
+        return mensagem;
+    }
+
     @Override
     public String toString() {
         return "Territorio{" +

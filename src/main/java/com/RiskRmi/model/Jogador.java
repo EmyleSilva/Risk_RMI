@@ -23,6 +23,7 @@ public class Jogador implements Serializable {
 
     public Jogador(String nome, ClientCallback clienteAssociado) {
         this.nome = nome;
+        this.clienteAssociado = clienteAssociado;
     }
 
     public void adicionarCarta(Carta carta) {
@@ -106,8 +107,8 @@ public class Jogador implements Serializable {
 
         for (Territorio t : territorios) {
             Integer i = t.getTropas().get(infantaria);
-            Integer c = t.getTropas().get(cavalaria);
-            territoriosTropas.add("Território: " + t.getNome().getNome() + "Tropas: i(" + i + ") | c(" + c + ")");
+            Integer c = t.getTropas().get(cavalaria) * cavalaria.getValor();
+            territoriosTropas.add("Território: " + t.getNome().getNome() + " | Tropas: infantaria(" + i + ") | cavalaria(" + c + ")");
         }
 
         return territoriosTropas;
