@@ -88,4 +88,10 @@ public class Validate {
             throw new InvalidActionException("Você não pode atacar seu próprio território!");
         }
     }
+
+    public void validarPassarVezInicial(Jogador jogador, FasesJogo faseAtual) {
+        if(faseAtual == FasesJogo.POSICIONAMETO_INICAL && jogador.getTropasDisponiveis() > 0) {
+            throw new InvalidActionException("Você deve posicionar todas as suas tropas iniciais!");
+        }
+    }
 }

@@ -16,8 +16,6 @@ public interface GameService extends Remote {
      *
      * Quando a quantidade minima de jogadores é antigida, inicia o jogo automaticamente.
      *
-     * TODO: Possibilitar inicio quando os jogadores confirmam que todos entraram (respeitando as quantidades mínimas e máxima)
-     *
      * @param nome O nome do jogador.
      * @return Um inteiro identificador, gerado para o jogador registrado.
      * */

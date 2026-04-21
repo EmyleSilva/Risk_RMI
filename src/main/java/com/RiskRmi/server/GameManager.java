@@ -418,7 +418,7 @@ public class GameManager {
         for (int i = 0; i < menor; i++) {
             if (ataquesResultados.get(i) > defesasResultados.get(i)) {
                 perdasDefesa++;
-            }else if (ataquesResultados.get(i) <= defesasResultados.get(i)){ //TODO:Tirar esse condicional desnecessário
+            }else {
                 perdasAtaque++;
             }
         }
@@ -431,7 +431,6 @@ public class GameManager {
             territorioDestino.retirarTropas(tropas, perdasDefesa);
         }
 
-        /** TODO: Melhorar essa mensagem (contéudo e ordem que as coisas aparecem) **/
         /** Verifica se houve captura de território, se sim, altera o dono */
         final boolean territorioCapturado = territorioDestino.verificarCaptura(tropas);
         String mensagem = "";
@@ -558,13 +557,12 @@ public class GameManager {
      * Caso seja o ultimo jogador, retorna para o primeiro da fila.
      * Sempre reinicia a pilha de fases para cada novo jogador.
      *
-     * TODO: Não permitir passar a vez manualmente no turno de Posicionamento Inicial.
-     *
      * @param jogadorId O id do jogador que realizou a requisição direta ou indiretamente
      *                  (quando acabam as peças do posicionamento inicial).
      * */
     public void passarVez(int jogadorId) {
         validator.validarTurnoJogador(jogadores, jogadorId, jogadorAtualIndex);
+        validator.validarPassarVezInicial(jogadores.get(jogadorId-1), fasesPorTurno.peek());
         if (ultimoDaRodada()) jogadorAtualIndex = 0;
         else jogadorAtualIndex++;
 

@@ -26,9 +26,6 @@ public class Territorio implements Serializable {
      * Inicializa as tropas do território de acordo com o tipo de tropas criadas no jogo.
      * Por padrão, todos os territórios começam com 0 tropas, até que a distribuição inicial comece.
      *
-     * TODO: Todos os territórios já podem começar com 1 tropa, e na parte de distribuir territórios não seria
-     *       mais necessário chamar adicionarTropas()
-     *
      * @param tropasDoJogo As tropas criadas no jogo.
      * */
     public void inicializarTropas(Map<String, Tropa> tropasDoJogo) {
@@ -45,9 +42,6 @@ public class Territorio implements Serializable {
      * Se a quantidade de tropas a ser inserida em um territorio for maior que o valor de uma cavalaria,
      * adiciona em cavalarias o total correspondente a divisão inteira das tropas pelo valor da cavalaria.
      * Depois, calcula o resto dessa divisão e adiciona o resultado em infantarias.
-     *
-     * TODO: Após inclusões, verificar o map de tropas para saber se a infantaria pode ser reorganizada para
-     *       se tornarem cavalarias.
      *
      * @param tropas Um map com as tropas criadas no jogo.
      * @param quantidade A quantidade total de tropas que o jogador deseja posicionar no território.
