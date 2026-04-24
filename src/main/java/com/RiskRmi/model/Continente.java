@@ -34,16 +34,8 @@ public class Continente implements Serializable {
         return t;
     }
 
-    public void setTerritorios(List<Territorio> territorios) {
-        this.territorios = territorios;
-    }
-
     public int getBonus() {
         return bonus;
-    }
-
-    public void setBonus(int bonus) {
-        this.bonus = bonus;
     }
 
     @Override

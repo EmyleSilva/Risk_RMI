@@ -14,20 +14,8 @@ public class Tropa implements Serializable {
         this.valor = valor;
     }
 
-    public TipoTropa getTropa() {
-        return tropa;
-    }
-
-    public void setTropa(TipoTropa tropa) {
-        this.tropa = tropa;
-    }
-
     public Integer getValor() {
         return valor;
-    }
-
-    public void setValor(Integer valor) {
-        this.valor = valor;
     }
 
     @Override

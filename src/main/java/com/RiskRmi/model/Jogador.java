@@ -159,18 +159,6 @@ public class Jogador implements Serializable {
         return territorios;
     }
 
-    public void setTerritorios(List<Territorio> territorios) {
-        this.territorios = territorios;
-    }
-
-    public Map<TipoTropa, Integer> getTropas() {
-        return tropas;
-    }
-
-    public void setTropas(Map<TipoTropa, Integer> tropas) {
-        this.tropas = tropas;
-    }
-
     public int getTropasDisponiveis() {
         return tropasDisponiveis;
     }
@@ -181,14 +169,6 @@ public class Jogador implements Serializable {
 
     public ClientCallback getClienteAssociado() {
         return clienteAssociado;
-    }
-
-    public List<Carta> getCartas() {
-        return cartas;
-    }
-
-    public void setCartas(List<Carta> cartas) {
-        this.cartas = cartas;
     }
 
     @Override

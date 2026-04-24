@@ -158,16 +158,8 @@ public class Territorio implements Serializable {
         return vizinhos;
     }
 
-    public void setVizinhos(List<Territorios> vizinhos) {
-        this.vizinhos = vizinhos;
-    }
-
     public Map<Tropa, Integer> getTropas() {
         return tropas;
-    }
-
-    public void setTropas(Map<Tropa, Integer> tropas) {
-        this.tropas = tropas;
     }
 
     public String exibirTropas(Map<String, Tropa> tropasJogo) {
