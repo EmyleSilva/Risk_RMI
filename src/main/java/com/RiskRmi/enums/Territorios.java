@@ -1,17 +1,18 @@
 package com.RiskRmi.enums;
 
 public enum Territorios {
-    BRASIL("Brasil"),
-    VENEZUELA("Venezuela"),
-    COLOMBIA("Colombia"),
-    ARGELIA("Argelia"),
-    EGITO("Egito"),
-    CONGO("Congo"),
-    QUENIA("Quenia"),
-    ESPANHA("Espanha"),
-    ALEMANHA("Alemanha"),
-    CHINA("China"),
-    JAPAO("Japao");
+    BARATIE("Baratie"),
+    ARLONG("Arlong Park"),
+    FOOSHA("Foosha Village"),
+    WHITE("White City"),
+    SPIDER("Spider Miles"),
+    OHARA("Ohara"),
+    KANO("Kano Country"),
+    GODVALLEY("God Valley"),
+    WHOLECAKE("Whole Cake"),
+    WANO("Wano"),
+    ENIES("Enies Lobby"),
+    SKYPIEA("Skypiea");
 
     private String nome;
 
