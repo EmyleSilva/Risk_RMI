@@ -14,4 +14,6 @@ public interface ClientCallback extends Remote {
     void onGameEvent(String mensagem) throws RemoteException;
 
     void onEndGame(String mensagem) throws RemoteException;
+
+    void onStartGame(int jogadorId) throws RemoteException;
 }

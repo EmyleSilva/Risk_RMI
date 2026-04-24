@@ -33,4 +33,10 @@ public class ClientCallbackImpl extends UnicastRemoteObject implements ClientCal
             cliente.encerrarJogo(mensagem);
         }).start();
     }
+
+    @Override
+    public void onStartGame(int jogadorId) throws RemoteException {
+        cliente.setJogadorId(jogadorId);
+        cliente.iniciarJogo();
+    }
 }

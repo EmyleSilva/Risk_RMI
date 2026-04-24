@@ -65,7 +65,8 @@ public class GameManager {
     /**
      * Atualiza a flag de sinalização de inicio do jogo quando a quantidade mínima de jogadores
      * é antigida.
-     * Além disso, inicia o processo de criação do jogo através da chamada do metodo criarJogo()
+     * Além disso, inicia o processo de criação do jogo através da chamada do metodo criarJogo() e
+     * incializa o jogo para cada cliente.
      * */
     public void verificarInicioJogo() {
         if (this.jogadores.size() >= MIN_JOGADORES && !jogoIniciado) {
@@ -73,9 +74,26 @@ public class GameManager {
             jogoIniciado = true;
             System.out.println("Jogo Iniciado!");
             notificador.callback(clientes, notificador.jogoIniciado());
+            iniciarClientes();
             notificarPosicionamentoInicial();
         }else {
             notificador.callback(clientes, notificador.aguardandoJogadores());
+        }
+    }
+
+    /**
+     * Inicializa o jogo para cada cliente
+     * */
+    public void iniciarClientes() {
+        for (Jogador j : jogadores) {
+            try {
+                ClientCallback c = j.getClienteAssociado();
+                c.onStartGame(j.getId());
+            }catch (RemoteException e) {
+                System.out.println("Erro: " + e.getMessage() + " ao notificar cliente.");
+                clientes.remove(j.getClienteAssociado());
+                System.out.println("Cliente removido do servidor.\n");
+            }
         }
     }
 

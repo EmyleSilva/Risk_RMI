@@ -35,10 +35,6 @@ public class Client {
             /** Registra um novo jogador juntamente com o objeto de callback para o servidor*/
             jogadorId = risk.registrarJogador(nomeJogador, callback);
 
-            user.setJogadorId(jogadorId);
-
-            user.iniciarJogo();
-
         }catch (RemoteException | NotBoundException | MalformedURLException e) {
             System.out.println(e.getMessage());
         }
