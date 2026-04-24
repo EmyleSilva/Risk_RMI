@@ -331,6 +331,8 @@ public class GameManager {
      * @param quantidadeTropas A quantidade de tropas que deve ser adicionada.
      * */
     public void posicionamentoInicial(int jogadorId, String nomeTerritorio, int quantidadeTropas) {
+        validator.validarTerritorio(nomeTerritorio, territorios);
+
         Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         Territorio territorio = territorios.get(nomeTerritorio);
 
@@ -380,6 +382,8 @@ public class GameManager {
      * @return A quantidade total de tropas.
      * */
     public Integer totalTropasTerritorio(String nomeTerritorio) {
+        validator.validarTerritorio(nomeTerritorio, territorios);
+
         Territorio territorio = territorios.get(nomeTerritorio);
         return territorio.getTotalTropas(tropas);
     }
@@ -399,6 +403,9 @@ public class GameManager {
      * @param destino Nome do território que o jogador quer atacar.
      * */
     public void atacar(int jogadorId, String origem, String destino) throws RemoteException{
+        validator.validarTerritorio(origem, territorios);
+        validator.validarTerritorio(destino, territorios);
+
         Territorio territorioOrigem = territorios.get(origem);
         Territorio territorioDestino = territorios.get(destino);
 
@@ -544,6 +551,9 @@ public class GameManager {
      * @param quantidadeTropas A quantidade de tropas que será movida.
      * */
     public void movimentarTropas(int jogadorId, String origem, String destino, Integer quantidadeTropas) {
+        validator.validarTerritorio(origem, territorios);
+        validator.validarTerritorio(destino, territorios);
+
         Territorio tOrigem = territorios.get(origem);
         Territorio tDestino = territorios.get(destino);
         Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
@@ -614,6 +624,8 @@ public class GameManager {
      *
      * */
     public void posicionarTropas(int jogadorId, String territorioNome, Integer quantidadeTropas) {
+        validator.validarTerritorio(territorioNome, territorios);
+
         Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
         Territorio territorio = territorios.get(territorioNome);
 

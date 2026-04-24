@@ -9,6 +9,7 @@ import com.RiskRmi.model.Tropa;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 
 public class Validate {
@@ -99,5 +100,21 @@ public class Validate {
         if (faseAtual == FasesJogo.POSICIONAMETO_INICAL && ((jogadorAtual.getId() != idUltimoJogador) || jogadorAtual.getTropasDisponiveis() != 0)) {
             throw new InvalidActionException("Você deve posicionar todas as suas tropas iniciais!");
         }
+    }
+
+    public void validarTerritorio(String nomeTerritorio, Map<String, Territorio> territorios) {
+        boolean encontrouTerritorio = false;
+
+        for (String nomeT : territorios.keySet()) {
+            if (Objects.equals(nomeT, nomeTerritorio)) {
+                encontrouTerritorio = true;
+                break;
+            }
+        }
+
+        if (!encontrouTerritorio) {
+            throw new InvalidActionException("O território " + nomeTerritorio + " não existe.");
+        }
+
     }
 }
