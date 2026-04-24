@@ -68,6 +68,15 @@ O objetivo principal do projeto é elaborar um jogo distribuído utilizando o *R
 
 ## 🎲 Funcionamento do Jogo
 
+### 🗺️ Mapa
+
+![Mapa](assets/map.jpg)
+
+> Obs.: Mapa gerado com auxilio de inteligência artificial. 
+
+
+### 📜 Regras 
+
 As regras e funcionalidades do jogo são descritas a seguir:
 
 1. O jogo deve ter no mínimo 2 jogadores e no máximo 4. O número total de jogadores deve ser definido em MIN_JOGADORES na classe server/GameManager.java.
