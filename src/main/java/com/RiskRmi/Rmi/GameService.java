@@ -1,7 +1,6 @@
 package com.RiskRmi.Rmi;
 
 import com.RiskRmi.exceptions.InvalidActionException;
-import com.RiskRmi.model.Carta;
 import com.RiskRmi.model.Territorio;
 
 import java.rmi.Remote;
