@@ -96,23 +96,30 @@ public class UserCLI implements Runnable{
 
     public void opcaoPosicionarTropasIniciais() throws RemoteException, InvalidActionException {
 
-        int quantidadeTropas; int index = 1;
+        int quantidadeTropas; int index = 1; int continuarAtaque = 0;
         String territorioEscolhido;
         List<String> territorios = risk.buscarTerritoriosJogador(this.jogadorId);
 
-        for (String t : territorios) {
-            System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
-        }
-        System.out.println("Selecione um território: ");
-        territorioEscolhido = territorios.get(input.nextInt()-1);
-        input.nextLine(); //Limpar o buffer.
+        do {
+            for (String t : territorios) {
+                System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+            }
+            System.out.println("Selecione um território: ");
+            territorioEscolhido = territorios.get(input.nextInt() - 1);
+            input.nextLine(); //Limpar o buffer.
 
-        System.out.println("Total de Tropas Disponiveis: " + risk.quantidadeTropasDisponiveis(this.jogadorId));
-        System.out.println("Quantas tropas deseja posicionar? ");
-        quantidadeTropas = input.nextInt();
-        input.nextLine(); //Limpar o buffer.
+            System.out.println("Total de Tropas Disponiveis: " + risk.quantidadeTropasDisponiveis(this.jogadorId));
+            System.out.println("Quantas tropas deseja posicionar? ");
+            quantidadeTropas = input.nextInt();
+            input.nextLine(); //Limpar o buffer.
 
-        risk.posicionamentoInicialDeTropas(jogadorId, territorioEscolhido, quantidadeTropas);
+            risk.posicionamentoInicialDeTropas(jogadorId, territorioEscolhido, quantidadeTropas);
+
+            System.out.println("(1) CONTINUAR POSICIONAMENTO INICIAL\n(0) VOLTAR PARA O MENU");
+            continuarAtaque = input.nextInt();
+            input.nextLine(); //Limpar o buffer
+            index = 1;
+        }while (continuarAtaque == 1);
     }
 
     public void opcaoAtacar() throws RemoteException, InvalidActionException {

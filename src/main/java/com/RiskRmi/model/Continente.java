@@ -12,6 +12,7 @@ public class Continente implements Serializable {
     public Continente(String nome, List<Territorio> territorios, int bonus) {
         this.nome = nome;
         this.territorios = territorios;
+        this.bonus = bonus;
     }
 
     public String getNome() {
