@@ -42,7 +42,6 @@ O objetivo principal do projeto é elaborar um jogo distribuído utilizando o *R
 │       │   ├── Continente.java
 │       │   ├── Dado.java
 │       │   ├── Jogador.java
-│       │   ├── NotificacoesCallback.java
 │       │   ├── Territorio.java
 │       │   └── Tropa.java
 │       ├── Rmi/
@@ -50,11 +49,15 @@ O objetivo principal do projeto é elaborar um jogo distribuído utilizando o *R
 │       │   └── GameService.java
 │       └── server/
 │           ├── GameManager.java
+│           ├── NotificacoesCallback.java
 │           ├── GameServiceImpl.java
 │           └── Validate.java
 ├── assets/
-│   └── demo.gif
-└── README.md
+│   ├── demo.gif
+│   └── map.jpg
+├── README.md
+├── pom.xml
+└── .gitignore
 ```
 
 - A lógica do jogo é mantida pelo servidor, no diretório **server**. 
