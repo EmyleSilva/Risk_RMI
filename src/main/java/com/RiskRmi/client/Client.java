@@ -21,7 +21,7 @@ public class Client {
 
     public static void main(String[] args) {
         try {
-            System.out.println("============================ RISK GAME ============================");
+            System.out.println("============================ RISK GAME - ONE PIECE ============================");
             System.out.println("Bem Vindo ao Risk! Digite um username para se juntar a partida: ");
             nomeJogador = input.nextLine();
 
@@ -34,7 +34,6 @@ public class Client {
 
             /** Registra um novo jogador juntamente com o objeto de callback para o servidor*/
             jogadorId = risk.registrarJogador(nomeJogador, callback);
-            System.out.println("Bem Vindo ao Risk," + nomeJogador + "! Seu id é: " + jogadorId);
 
             user.setJogadorId(jogadorId);
 

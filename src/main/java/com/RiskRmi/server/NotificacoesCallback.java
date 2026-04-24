@@ -45,10 +45,10 @@ public class NotificacoesCallback {
     public String notificarFimJogo(Jogador jogador) {
         return """ 
         ======================================================================
-        =                                                                    =
-        =                           FIM DE JOGO!!                            =
-        =                %s Conquistou todos os territórios.                 =
-        =                                                                    =
+        
+                                    FIM DE JOGO!!                            
+                         %s É o novo Rei dos Piratas!                         
+                                                                             
         ======================================================================
         """.formatted(jogador.getNome());
     }
@@ -74,6 +74,7 @@ public class NotificacoesCallback {
         ======================================================================
         =                                                                    =
         =                          JOGO INICIADO!                            =
+        =                    BEM-VINDO A ERA DOS PIRATAS                     =
         =                                                                    =
         ======================================================================
         """;
