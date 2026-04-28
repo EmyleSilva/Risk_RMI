@@ -108,6 +108,11 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
         return manager.exibirEstadoJogo();
     }
 
+    @Override
+    public List<String> buscarTerritoriosInimigos(int jogadorId) throws RemoteException, InvalidActionException {
+        return manager.buscarTerritoriosInimigos(jogadorId);
+    }
+
     public static void main(String[] args) {
         try {
 //            System.setProperty("java.rmi.server.hostname", "192.168.15.7");

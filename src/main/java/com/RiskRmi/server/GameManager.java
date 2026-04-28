@@ -572,6 +572,19 @@ public class GameManager {
         return jogador.getCartasNomes();
     }
 
+    public List<String> buscarTerritoriosInimigos(int jogadorId) {
+        List<String> territorios = new ArrayList<>();
+        Jogador jogador = jogadores.get(buscarPosicaoJogador(jogadorId));
+
+        for (String t : this.territorios.keySet()) {
+            Territorio objectT = this.territorios.get(t);
+            if (objectT.getDono() != jogador) {
+                territorios.add(t);
+            }
+        }
+        return territorios;
+    }
+
     /*******************************************************
      *            MÉTODOS AUXILIARES
      *******************************************************/

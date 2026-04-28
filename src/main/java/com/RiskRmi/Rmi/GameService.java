@@ -128,4 +128,12 @@ public interface GameService extends Remote {
      * @return Uma string com todas as informações do estado do jogo.
      * */
     String buscarEstadoJogo() throws RemoteException;
+
+    /**
+     * Retorna uma lista com o nome de todos os territórios que não pertencem
+     * ao jogador realizando a solicitação.
+     * @param jogadorId O id do jogador que está realizando a busca
+     * @return Uma lista de Strings com os nomes dos territórios.
+     * */
+    List<String> buscarTerritoriosInimigos(int jogadorId) throws RemoteException, InvalidActionException;
 }

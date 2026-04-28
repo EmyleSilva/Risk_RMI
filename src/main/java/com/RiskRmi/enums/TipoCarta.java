@@ -1,8 +1,8 @@
 package com.RiskRmi.enums;
 
 public enum TipoCarta {
-    INFANTARIA("CARTA: Infantaria"),
-    CAVALARIA("CARTA: Cavalaria");
+    INFANTARIA("CARTA: Piratas"),
+    CAVALARIA("CARTA: Marinha");
 
     private String descricao;
 
