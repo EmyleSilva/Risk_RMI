@@ -82,8 +82,8 @@ O objetivo principal do projeto é elaborar um jogo distribuído utilizando o *R
 
 As regras e funcionalidades do jogo são descritas a seguir:
 
-1. O jogo deve ter no mínimo 2 jogadores e no máximo 4. O número total de jogadores deve ser definido em MIN_JOGADORES na classe server/GameManager.java.
-O jogo inicia automáticamente quando a quantidade mínima de jogadores é antigida. 
+1. O jogo deve ter no mínimo 2 jogadores e no máximo 4. O número total de jogadores deve ser definido em QUANTIDADE_JOGADORES na classe server/GameManager.java.
+O jogo inicia automáticamente quando a quantidade de jogadores definida é atingida. 
 
 2. O jogo é composto por 4 fases principais:
 

@@ -8,7 +8,6 @@ import com.RiskRmi.enums.TipoTropa;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.*;
 
-import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
@@ -28,7 +27,7 @@ public class GameManager {
     private final int TAMANHO_BARALHO;
     private Dado dado;
     private Boolean jogoIniciado = false;
-    private final int MIN_JOGADORES = 2;
+    private final int QUANTIDADE_JOGADORES = 2;
     private final List<ClientCallback> clientes;
     private final NotificacoesCallback notificador;
     private Validate validator;
@@ -53,14 +52,14 @@ public class GameManager {
     }
 
     /**
-     * Remove um jogador da partida, também retira retira o listener associado a ele.
+     * Remove um jogador da partida, mantém o cliente associado como listener para que ele continue
+     * acompanhando a partida.
      * @param jogador O jogador que foi derrotado.
      * @param mensagem Uma mensagem de fim de jogo para o jogador.
      * */
     public void removerJogadorCliente(Jogador jogador, String mensagem) throws RemoteException{
         ClientCallback clienteAssociado = jogador.getClienteAssociado();
         clienteAssociado.onEndGame(mensagem);
-        clientes.remove(clienteAssociado);
         jogadores.remove(jogador);
     }
 
@@ -71,7 +70,7 @@ public class GameManager {
      * incializa o jogo para cada cliente.
      * */
     public void verificarInicioJogo() {
-        if (this.jogadores.size() >= MIN_JOGADORES && !jogoIniciado) {
+        if (this.jogadores.size() >= QUANTIDADE_JOGADORES && !jogoIniciado) {
             criarJogo();
             jogoIniciado = true;
             System.out.println("Jogo Iniciado!");
@@ -838,7 +837,7 @@ public class GameManager {
                 ", TAMANHO_BARALHO=" + TAMANHO_BARALHO +
                 ", dado=" + dado +
                 ", jogoIniciado=" + jogoIniciado +
-                ", MIN_JOGADORES=" + MIN_JOGADORES +
+                ", MIN_JOGADORES=" + QUANTIDADE_JOGADORES +
                 ", clientes=" + clientes +
                 ", notificador=" + notificador +
                 ", validator=" + validator +
