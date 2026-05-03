@@ -94,140 +94,156 @@ public class UserCLI implements Runnable{
     }
 
     public void opcaoPosicionarTropasIniciais() throws RemoteException, InvalidActionException {
+        try {
+            int quantidadeTropas; int index = 1; int continuarAtaque = 0;
+            String territorioEscolhido;
+            List<String> territorios = risk.buscarTerritoriosJogador(this.jogadorId);
 
-        int quantidadeTropas; int index = 1; int continuarAtaque = 0;
-        String territorioEscolhido;
-        List<String> territorios = risk.buscarTerritoriosJogador(this.jogadorId);
+            do {
+                for (String t : territorios) {
+                    System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+                }
+                System.out.println("Selecione um território: ");
+                territorioEscolhido = territorios.get(input.nextInt() - 1);
+                input.nextLine(); //Limpar o buffer.
 
-        do {
-            for (String t : territorios) {
-                System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
-            }
-            System.out.println("Selecione um território: ");
-            territorioEscolhido = territorios.get(input.nextInt() - 1);
-            input.nextLine(); //Limpar o buffer.
+                System.out.println("Total de Tropas Disponiveis: " + risk.quantidadeTropasDisponiveis(this.jogadorId));
+                System.out.println("Quantas tropas deseja posicionar? ");
+                quantidadeTropas = input.nextInt();
+                input.nextLine(); //Limpar o buffer.
 
-            System.out.println("Total de Tropas Disponiveis: " + risk.quantidadeTropasDisponiveis(this.jogadorId));
-            System.out.println("Quantas tropas deseja posicionar? ");
-            quantidadeTropas = input.nextInt();
-            input.nextLine(); //Limpar o buffer.
+                risk.posicionamentoInicialDeTropas(jogadorId, territorioEscolhido, quantidadeTropas);
 
-            risk.posicionamentoInicialDeTropas(jogadorId, territorioEscolhido, quantidadeTropas);
-
-            System.out.println("(1) CONTINUAR POSICIONAMENTO INICIAL\n(0) VOLTAR PARA O MENU");
-            continuarAtaque = input.nextInt();
-            input.nextLine(); //Limpar o buffer
-            index = 1;
-        }while (continuarAtaque == 1);
+                System.out.println("(1) CONTINUAR POSICIONAMENTO INICIAL\n(0) VOLTAR PARA O MENU");
+                continuarAtaque = input.nextInt();
+                input.nextLine(); //Limpar o buffer
+                index = 1;
+            }while (continuarAtaque == 1);
+        }catch (IndexOutOfBoundsException e) {
+            System.out.println("Opção Inválida, Selecione 'Posicionar Tropas Iniciais' e tente novamente!\n");
+        }
     }
 
     public void opcaoAtacar() throws RemoteException, InvalidActionException {
-        int continuarAtaque = 1, index = 1;
+        try {
+            int continuarAtaque = 1, index = 1;
 
-        String origem, destino;
+            String origem, destino;
 
-        while (continuarAtaque != 0) {
-            List<String> territorios = risk.buscarTerritoriosJogador(jogadorId);
-            List<String> territoriosInimigos = risk.buscarTerritoriosInimigos(jogadorId);
+            while (continuarAtaque != 0) {
+                List<String> territorios = risk.buscarTerritoriosJogador(jogadorId);
+                List<String> territoriosInimigos = risk.buscarTerritoriosInimigos(jogadorId);
 
-            System.out.println("**************************** SEUS TERRITÓRIOS ****************************");
-            for (String t : territorios) {
-                System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+                System.out.println("**************************** SEUS TERRITÓRIOS ****************************");
+                for (String t : territorios) {
+                    System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+                }
+                System.out.println("Selecione um território: ");
+                origem = territorios.get(input.nextInt() - 1);
+                input.nextLine(); //Limpar Buffer
+                index = 1;
+
+                System.out.println("**************************** TERRITÓRIOS INIMIGOS ****************************");
+                for (String t : territoriosInimigos) {
+                    System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+                }
+                destino = territoriosInimigos.get(input.nextInt() - 1);
+                input.nextLine(); //Limpar Buffer
+                index = 1;
+
+                risk.atacar(jogadorId, origem, destino);
+
+                System.out.println("(1) - CONTINUAR ATAQUE\n(0) - IR PARA PRÓXIMA FASE\n");
+                continuarAtaque = input.nextInt();
+                input.nextLine(); //Limpar o buffer.
             }
-            System.out.println("Selecione um território: ");
-            origem = territorios.get(input.nextInt() - 1);
-            input.nextLine(); //Limpar Buffer
-            index = 1;
 
-            System.out.println("**************************** TERRITÓRIOS INIMIGOS ****************************");
-            for (String t : territoriosInimigos) {
-                System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
-            }
-            destino = territoriosInimigos.get(input.nextInt() - 1);
-            input.nextLine(); //Limpar Buffer
-            index = 1;
-
-            risk.atacar(jogadorId, origem, destino);
-
-            System.out.println("(1) - CONTINUAR ATAQUE\n(0) - IR PARA PRÓXIMA FASE\n");
-            continuarAtaque = input.nextInt();
-            input.nextLine(); //Limpar o buffer.
+            if (jogoAtivo) risk.passarFase(jogadorId);
+        }catch (IndexOutOfBoundsException e) {
+            System.out.println("Opção Inválida! Selecione Atacar e tente novamente!\n");
         }
-
-        if (jogoAtivo) risk.passarFase(jogadorId);
     }
 
     public void opcaoPosicionarTropas() throws  RemoteException {
-        List<String> cartas = risk.buscarCartasJogador(jogadorId);
-        List<String> territorios = risk.buscarTerritoriosJogador(jogadorId);
+        try {
+            List<String> cartas = risk.buscarCartasJogador(jogadorId);
+            List<String> territorios = risk.buscarTerritoriosJogador(jogadorId);
 
-        int quantidadeTropas = 0;
-        int index = 1;
-        String territorio;
+            int quantidadeTropas = 0;
+            int index = 1;
+            String territorio;
 
-        System.out.println("**************************** CARTAS ****************************");
-        if (!cartas.isEmpty()) {
-            for (String c : cartas) {
-                System.out.println(c);
+            System.out.println("**************************** CARTAS ****************************");
+            if (!cartas.isEmpty()) {
+                for (String c : cartas) {
+                    System.out.println(c);
+                }
+            } else {
+                System.out.println("Deck de Cartas Vazio!");
             }
-        }else {
-            System.out.println("Deck de Cartas Vazio!");
-        }
 
-        System.out.println("\nVocê pode trocar 3 cartas iguais por bonificação");
-        System.out.println("*********************************************************************");
+            System.out.println("\nVocê pode trocar 3 cartas iguais por bonificação");
+            System.out.println("*********************************************************************");
 
-        int escolha = 0;
-        System.out.println("\nDeseja trocar cartas por bonificação?\n(0) Não\n(1) Sim");
-        escolha = input.nextInt();
-        input.nextLine();
-
-        if (escolha == 1) {
-            System.out.println(risk.trocarCartas(jogadorId));
-        }
-
-        do {
-            System.out.println("Selecione o território: ");
-            for (String t : territorios) {
-                System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
-            }
-            territorio = territorios.get(input.nextInt() - 1);
-            System.out.println("Você possui " + risk.quantidadeTropasDisponiveis(jogadorId) + " tropas disponíveis");
-
-            System.out.println("Digite quantas tropas deseja posicionar no território: ");
-            quantidadeTropas = input.nextInt();
+            int escolha = 0;
+            System.out.println("\nDeseja trocar cartas por bonificação?\n(0) Não\n(1) Sim");
+            escolha = input.nextInt();
             input.nextLine();
 
-            risk.posicionarTropas(jogadorId, territorio, (Integer) quantidadeTropas);
+            if (escolha == 1) {
+                System.out.println(risk.trocarCartas(jogadorId));
+            }
 
-            System.out.println("(1) - CONTINUAR POSICIONAMENTO\n(0) - IR PARA PRÓXIMA FASE");
-            escolha = input.nextInt();;
-            input.nextLine();
-            index = 1;
-        }while (escolha == 1);
+            do {
+                System.out.println("Selecione o território: ");
+                for (String t : territorios) {
+                    System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+                }
+                territorio = territorios.get(input.nextInt() - 1);
+                System.out.println("Você possui " + risk.quantidadeTropasDisponiveis(jogadorId) + " tropas disponíveis");
 
-        if (jogoAtivo) risk.passarFase(jogadorId);
+                System.out.println("Digite quantas tropas deseja posicionar no território: ");
+                quantidadeTropas = input.nextInt();
+                input.nextLine();
+
+                risk.posicionarTropas(jogadorId, territorio, (Integer) quantidadeTropas);
+
+                System.out.println("(1) - CONTINUAR POSICIONAMENTO\n(0) - IR PARA PRÓXIMA FASE");
+                escolha = input.nextInt();
+                ;
+                input.nextLine();
+                index = 1;
+            } while (escolha == 1);
+
+            if (jogoAtivo) risk.passarFase(jogadorId);
+        }catch (IndexOutOfBoundsException e) {
+            System.out.println("Opção Inválida! Selecione 'Posicionar Tropas' e tente novamente!\n");
+        }
     }
 
     public void opcaoMovimentarTropas() throws RemoteException{
-        List<String> territorios = risk.buscarTerritoriosJogador(jogadorId);
-        String origem, destino;
-        int quantidadeTropas, index = 1;
+        try {
+            List<String> territorios = risk.buscarTerritoriosJogador(jogadorId);
+            String origem, destino;
+            int quantidadeTropas, index = 1;
 
-        System.out.println("********************************* Territórios *********************************");
-        for (String t : territorios) {
-            System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+            System.out.println("********************************* Territórios *********************************");
+            for (String t : territorios) {
+                System.out.println("(" + index++ + "): " + t + " >>>>>> Total Tropas: " + risk.buscarTotalTropasTerritorio(t));
+            }
+            System.out.println("Escolha o Território de Origem:");
+            origem = territorios.get(input.nextInt() - 1);
+            input.nextLine(); //Limpar Buffer
+            System.out.println("Escolha o território de destino (fortificar): ");
+            destino = territorios.get(input.nextInt() - 1);
+            input.nextLine(); //Limpar Buffer
+            System.out.println("Digite quantas tropas deseja mover: ");
+            quantidadeTropas = input.nextInt();
+            input.nextLine(); //Limpar Buffer
+
+            risk.movimentar(jogadorId, origem, destino, (Integer) quantidadeTropas);
+        }catch (IndexOutOfBoundsException e) {
+            System.out.println("Opção Inválida, selecione 'Movimentar Tropas' e tente novamente!\n");
         }
-        System.out.println("Escolha o Território de Origem:");
-        origem = territorios.get(input.nextInt()- 1);
-        input.nextLine(); //Limpar Buffer
-        System.out.println("Escolha o território de destino (fortificar): ");
-        destino = territorios.get(input.nextInt()- 1);
-        input.nextLine(); //Limpar Buffer
-        System.out.println("Digite quantas tropas deseja mover: ");
-        quantidadeTropas = input.nextInt();
-        input.nextLine(); //Limpar Buffer
-
-        risk.movimentar(jogadorId, origem, destino, (Integer) quantidadeTropas);
     }
 }
