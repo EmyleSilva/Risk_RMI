@@ -166,7 +166,7 @@ public class Territorio implements Serializable {
         String mensagem = "";
 
         for (String s : tropasJogo.keySet()) {
-            mensagem = mensagem + "{" + s + " | Quantidade: " + tropas.get(tropasJogo.get(s)) + "} ";
+            mensagem = mensagem + "{" + s + "(" + tropas.get(tropasJogo.get(s)) + ")} ";
         }
         return mensagem;
     }

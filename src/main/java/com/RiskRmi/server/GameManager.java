@@ -8,8 +8,10 @@ import com.RiskRmi.enums.TipoTropa;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.*;
 
+import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameManager {
@@ -672,7 +674,7 @@ public class GameManager {
     /**
      * Calcula a bonificação de territórios e continentes do jogador.
      * O total de tropas recebidas pelo jogador será:
-     *      > a quantidade de territórios que ele possiu, dividido por 3 (sendo sempre o mínimo de 3 tropas).
+     *      > a quantidade de territórios que ele possui, dividido por 3 (sendo sempre o mínimo de 3 tropas).
      *      > o valor de bônus do continente para cada continente que ele domina.
      *
      * @param jogadorId O id do jogador que está iniciando um novo turno.
@@ -786,7 +788,7 @@ public class GameManager {
 
         for (String t : territorios.keySet()) {
             Territorio territorio = territorios.get(t);
-            mensagem = mensagem + "Dono: " + territorio.getDono().getNome() + " | Território: " + territorio.getNome() + " | Vizinhos: " + territorio.getVizinhos() + " Tropas: " + territorio.exibirTropas(tropas) + "\n";
+            mensagem = mensagem + "Dono: " + territorio.getDono().getNome() + " " + territorio.getNome() + " | Vizinhos: " + territorio.getVizinhos() + " Tropas: " + territorio.exibirTropas(tropas) + "\n";
         }
 
         mensagem = mensagem + """
@@ -806,7 +808,7 @@ public class GameManager {
                 """;
 
         for (Jogador j : jogadores) {
-            mensagem = mensagem + "Nome: " + j.getNome() + " | Quantidade Territórios: " + j.getTerritorios().size() + " | Tropas: \n" + j.buscarTerritoriosTropas(tropas) + "\n\n";
+            mensagem = mensagem + "Nome: " + j.getNome() + " | Quantidade Territórios: " + j.getTerritorios().size() + " | Total Tropas: " + j.buscarTotalTropasJogador(tropas) + " | Tropas: \n" + j.buscarTerritoriosTropas(tropas) + "\n\n";
         }
 
         mensagem = mensagem + """

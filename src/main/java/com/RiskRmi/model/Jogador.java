@@ -106,8 +106,8 @@ public class Jogador implements Serializable {
 
         for (Territorio t : territorios) {
             Integer i = t.getTropas().get(infantaria);
-            Integer c = t.getTropas().get(cavalaria) * cavalaria.getValor();
-            territoriosTropas.add("Território: " + t.getNome() + " | Tropas: infantaria(" + i + ") | cavalaria(" + c + ")");
+            Integer c = t.getTropas().get(cavalaria);
+            territoriosTropas.add(t.getNome() + "{infantaria(" + i + ") cavalaria(" + c + ")}");
         }
 
         return territoriosTropas;
@@ -135,6 +135,20 @@ public class Jogador implements Serializable {
         }
 
         return cartas;
+    }
+
+    public Integer buscarTotalTropasJogador(Map<String, Tropa> tropasJogo) {
+        Integer quantidade = 0;
+
+        Tropa infantaria = tropasJogo.get(TipoTropa.INFANTARIA.getNome());
+        Tropa cavalaria = tropasJogo.get(TipoTropa.CAVALARIA.getNome());
+
+        for (Territorio t : territorios) {
+            quantidade += t.getTropas().get(infantaria);
+            quantidade += t.getTropas().get(cavalaria) * cavalaria.getValor();
+        }
+
+        return quantidade;
     }
 
 
