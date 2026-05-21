@@ -17,7 +17,7 @@ public class Jogador implements Serializable {
     private List<Territorio> territorios = new ArrayList<>();
     private Map<TipoTropa, Integer> tropas;
     private int tropasDisponiveis;
-    private List<Carta> cartas = new ArrayList<>();
+    private List<TipoCarta> cartas = new ArrayList<>();
     private ClientCallback clienteAssociado;
 
     public Jogador(String nome, ClientCallback clienteAssociado) {
@@ -25,18 +25,17 @@ public class Jogador implements Serializable {
         this.clienteAssociado = clienteAssociado;
     }
 
-    public void adicionarCarta(Carta carta) {
+    public void adicionarCarta(TipoCarta carta) {
         cartas.add(carta);
     }
 
     /**
      * Verifica se o jogador possui cartas suficientes e se atende ao critério de bonificação por cartas.
      * Se sim, retira as cartas da mão do jogador e as adiciona novamente no baralho.
-     * @param cartasJogo Os tipos de carta que estão no jogo.
      * @param baralho O baralho do jogo.
      * @return true quando acontece a troca, caso contrário, false.
      * */
-    public boolean retirarCartasBonus(Map<TipoCarta, Carta> cartasJogo, List<Carta> baralho) {
+    public boolean retirarCartasBonus(List<TipoCarta> baralho) {
         Integer quantidadeCartas = quantidadeCartas();
 
         if (quantidadeCartas < 3) {
@@ -47,15 +46,15 @@ public class Jogador implements Serializable {
         int quantCavalaria = 0;
 
         for (int i = 0; i < quantidadeCartas; i++) {
-            if (cartas.get(i).getTipo() == TipoCarta.INFANTARIA) quantInfantaria++;
+            if (cartas.get(i) == TipoCarta.INFANTARIA) quantInfantaria++;
             else quantCavalaria++;
         }
 
         if (quantInfantaria >= 3) {
-            removerCartas(TipoCarta.INFANTARIA, cartasJogo, baralho);
+            removerCartas(TipoCarta.INFANTARIA, baralho);
             return true;
         }else if (quantCavalaria >= 3) {
-            removerCartas(TipoCarta.CAVALARIA, cartasJogo, baralho);
+            removerCartas(TipoCarta.CAVALARIA, baralho);
             return true;
         }
 
@@ -72,13 +71,13 @@ public class Jogador implements Serializable {
     /**
      * Remove 3 cartas da mão do jogador e as adiciona novamente no baralho do jogo.
      * @param tipo O tipo de carta que está sendo removida.
-     * @param cartasJogo Os tipos de carta que estão no jogo.
+     *  cartasJogo Os tipos de carta que estão no jogo.
      * @param baralho O baralho do jogo.
      * */
-    public void removerCartas(TipoCarta tipo, Map<TipoCarta, Carta> cartasJogo, List<Carta> baralho) {
+    public void removerCartas(TipoCarta tipo, List<TipoCarta> baralho) {
         for (int i = 0; i < 3; i++) {
-            baralho.add(cartasJogo.get(tipo));
-            cartas.remove(cartasJogo.get(tipo));
+            baralho.add(tipo);
+            cartas.remove(tipo);
         }
     }
 
@@ -130,7 +129,7 @@ public class Jogador implements Serializable {
      * */
     public List<String> getCartasNomes() {
         List<String> cartas = new ArrayList<>();
-        for (Carta c : this.cartas) {
+        for (TipoCarta c : this.cartas) {
             cartas.add(c.getDescricao());
         }
 
