@@ -6,8 +6,6 @@ import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.Jogador;
 import com.RiskRmi.model.Territorio;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -135,7 +133,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
 
             System.out.println("Servidor Iniciado.......");
 
-        } catch (RemoteException /*| MalformedURLException */| InvalidActionException e) {
+        } catch (RemoteException | InvalidActionException e) {
 
             System.out.println(e.getMessage());
         }
