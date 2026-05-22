@@ -10,7 +10,7 @@ public class ClientCallbackImpl extends UnicastRemoteObject implements ClientCal
     private UserCLI cliente;
 
     protected ClientCallbackImpl(UserCLI cliente) throws RemoteException {
-        super();
+        super(6000);
         this.cliente = cliente;
     }
 

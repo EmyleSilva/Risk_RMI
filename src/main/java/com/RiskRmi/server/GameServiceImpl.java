@@ -6,10 +6,9 @@ import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.Jogador;
 import com.RiskRmi.model.Territorio;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
     private final List<ClientCallback> clientes;
 
     protected GameServiceImpl() throws RemoteException {
-        super();
+        super(5000);
         clientes = new ArrayList<>();
         manager = new GameManager(30, clientes);
     }
@@ -115,14 +114,26 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
 
     public static void main(String[] args) {
         try {
-            LocateRegistry.createRegistry(1099);
+            /**
+             * Configura a propriedade rmi.server.hostname
+             * Define o IP que será anunciado para o cliente.
+             * */
+            System.setProperty(
+                    "java.rmi.server.hostname",
+                    "192.168.15.10"
+            );
+
+            /**
+             * Cria o Registry na porta 1099
+             * */
+            Registry registry = LocateRegistry.createRegistry(1099);
 
             GameServiceImpl risk = new GameServiceImpl();
-            String name = "rmi://localhost/risk";
-            Naming.rebind(name, risk);
+            registry.rebind("risk", risk);
+
             System.out.println("Servidor Iniciado.......");
 
-        } catch (RemoteException | MalformedURLException | InvalidActionException e) {
+        } catch (RemoteException | InvalidActionException e) {
 
             System.out.println(e.getMessage());
         }
