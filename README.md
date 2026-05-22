@@ -38,12 +38,10 @@ O objetivo principal do projeto é elaborar um jogo distribuído utilizando o *R
 │       ├── exceptions/
 │       │   └── InvalidActionException.java
 │       ├── model/
-│       │   ├── Carta.java
 │       │   ├── Continente.java
 │       │   ├── Dado.java
 │       │   ├── Jogador.java
 │       │   ├── Territorio.java
-│       │   └── Tropa.java
 │       ├── Rmi/
 │       │   ├── ClientCallback.java
 │       │   └── GameService.java
