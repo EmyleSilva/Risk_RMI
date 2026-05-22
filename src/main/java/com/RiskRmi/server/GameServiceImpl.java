@@ -129,14 +129,15 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
              * Cria o Registry na porta 1099
              * */
             Registry registry = LocateRegistry.createRegistry(1099);
-//            LocateRegistry.createRegistry(1099);
 
             GameServiceImpl risk = new GameServiceImpl();
-            String name = "rmi://192.168.15.10:1099/risk";
-            Naming.rebind(name, risk);
+//            String name = "rmi://192.168.15.10:1099/risk";
+//            Naming.rebind(name, risk);
+            registry.rebind("risk", risk);
+
             System.out.println("Servidor Iniciado.......");
 
-        } catch (RemoteException | MalformedURLException | InvalidActionException e) {
+        } catch (RemoteException /*| MalformedURLException */| InvalidActionException e) {
 
             System.out.println(e.getMessage());
         }
