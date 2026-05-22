@@ -1,12 +1,14 @@
 package com.RiskRmi.enums;
 
 public enum TipoTropa {
-    INFANTARIA("Infantaria"),
-    CAVALARIA("Cavalaria");
+    INFANTARIA(1, "Infantaria"),
+    CAVALARIA(5, "Cavalaria");
 
     private String nome;
+    private Integer valor;
 
-    private TipoTropa(String nome) {
+    private TipoTropa(Integer valor, String nome) {
+        this.valor = valor;
         this.nome = nome;
     }
 
@@ -14,7 +16,7 @@ public enum TipoTropa {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public Integer getValor() {
+        return valor;
     }
 }

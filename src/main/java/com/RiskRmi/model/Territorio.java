@@ -13,7 +13,7 @@ public class Territorio implements Serializable {
     private Territorios nome;
     private Jogador dono;
     private List<Territorios> vizinhos;
-    private Map<Tropa, Integer> tropas;
+    private Map<TipoTropa, Integer> tropas;
 
     public Territorio(Territorios nome, List<Territorios> vizinhos) {
         this.nome = nome;
@@ -23,114 +23,95 @@ public class Territorio implements Serializable {
     /** Métodos do Jogo */
 
     /**
-     * Inicializa as tropas do território de acordo com o tipo de tropas criadas no jogo.
+     * Inicializa as tropas do território conforme o tipo de tropas criadas no jogo.
      * Por padrão, todos os territórios começam com 0 tropas, até que a distribuição inicial comece.
      *
      * @param tropasDoJogo As tropas criadas no jogo.
      * */
-    public void inicializarTropas(Map<String, Tropa> tropasDoJogo) {
+    public void inicializarTropas(List<TipoTropa> tropasDoJogo) {
         tropas = new HashMap<>();
 
-        for (String t : tropasDoJogo.keySet()) {
-            tropas.put(tropasDoJogo.get(t), 0);
+        for (TipoTropa t: tropasDoJogo) {
+            tropas.put(t, 0);
         }
-
     }
 
     /**
-     * Adiciona tropas em um território, realizando o agrupamento sempre que possivel para cavalarias.
-     * Se a quantidade de tropas a ser inserida em um territorio for maior que o valor de uma cavalaria,
-     * adiciona em cavalarias o total correspondente a divisão inteira das tropas pelo valor da cavalaria.
-     * Depois, calcula o resto dessa divisão e adiciona o resultado em infantarias.
+     * Adiciona tropas em um território.
+     * Sempre adiciona todas as tropas em infantaria, e depois reorganiza para distribuir
+     * corretamente entre infantaria e cavalaria.
      *
-     * @param tropas Um map com as tropas criadas no jogo.
      * @param quantidade A quantidade total de tropas que o jogador deseja posicionar no território.
      * */
-    public void adicionarTropas(Map<String, Tropa> tropas, Integer quantidade) {
-        Tropa infantaria = tropas.get(TipoTropa.INFANTARIA.getNome());
-        Tropa cavalaria = tropas.get(TipoTropa.CAVALARIA.getNome());
+    public void adicionarTropas(Integer quantidade) {
+        Integer quantCavalaria = 0;
+        Integer quantInfantaria = getTotalTropas()+quantidade;
+        this.tropas.put(TipoTropa.INFANTARIA, quantInfantaria);
+        this.tropas.put(TipoTropa.CAVALARIA, quantCavalaria);
 
-        if (quantidade < infantaria.getValor()) {
-            this.tropas.put(infantaria, quantidadeTropasAtuais(infantaria)+quantidade);
-        }else {
-            /** Formar cavalarias */
-            Integer quantCavalaria = quantidade / cavalaria.getValor();
-            Integer quantInfantaria = quantidade % cavalaria.getValor();
-
-            this.tropas.put(infantaria, quantidadeTropasAtuais(infantaria)+quantInfantaria);
-            this.tropas.put(cavalaria, quantidadeTropasAtuais(cavalaria)+quantCavalaria);
-        }
+        reorganizarTropas();
     }
 
     /**
      * Calcula o total de tropas no territorio.
-     * @param tropas Tropas do jogo.
      * @return O total de tropas.
      * */
-    public Integer getTotalTropas(Map<String, Tropa> tropas) {
-        Tropa infantaria = tropas.get(TipoTropa.INFANTARIA.getNome());
-        Tropa cavalaria = tropas.get(TipoTropa.CAVALARIA.getNome());
-
-        return this.tropas.get(infantaria) + (this.tropas.get(cavalaria) * cavalaria.getValor());
+    public Integer getTotalTropas() {
+        return this.tropas.get(TipoTropa.INFANTARIA) * TipoTropa.INFANTARIA.getValor() +
+                this.tropas.get(TipoTropa.CAVALARIA) * TipoTropa.CAVALARIA.getValor();
     }
 
     /**
      * Retira a quantidade de tropas perdidas do território.
-     * Reorganiza todas as tropas novamente para que fique equilibrado entre infantaria e
-     * cavalaria.
+     * Reorganiza todas as tropas novamente para que a distribuição
+     * entre infantaria e cavalaria permaneça correta.
      *
-     * @param tropas Todas as tropas do jogo.
      * @param quantidade A quantidade de tropas perdidas no território.
      * */
-    public void retirarTropas(Map<String, Tropa> tropas, int quantidade) {
-        Tropa infantaria = tropas.get(TipoTropa.INFANTARIA.getNome());
-        Tropa cavalaria = tropas.get(TipoTropa.CAVALARIA.getNome());
-        Integer totalTropas = getTotalTropas(tropas);
+    public void retirarTropas(int quantidade) {
+        Integer totalTropas = getTotalTropas();
 
-        Integer quantidadeInfantaria = this.tropas.get(infantaria);
-        Integer quantidadeCavalaria = this.tropas.get(cavalaria);
+        Integer quantidadeInfantaria = this.tropas.get(TipoTropa.INFANTARIA);
+        Integer quantidadeCavalaria = this.tropas.get(TipoTropa.CAVALARIA);
+
+        //Para debug no servidor
         System.out.println("\nANTES: (infantaria) - " + quantidadeInfantaria + " (cavalaria) - " + quantidadeCavalaria);
 
         quantidadeInfantaria = totalTropas - quantidade;
         quantidadeCavalaria = 0;
 
-        this.tropas.put(infantaria, quantidadeInfantaria);
-        this.tropas.put(cavalaria, quantidadeCavalaria);
+        this.tropas.put(TipoTropa.INFANTARIA, quantidadeInfantaria);
+        this.tropas.put(TipoTropa.CAVALARIA, quantidadeCavalaria);
 
-        reorganizarTropas(tropas);
+        reorganizarTropas();
     }
 
     /**
      * Verifica se o território ficou sem nenhuma tropa.
      * Caso sim, o território foi capturado pelo jogador que realizou o último ataque.
      *
-     * @param tropas Todas as tropas do jogo.
      * @return true se o território foi capturado e false caso contrário.
      * */
-    public boolean verificarCaptura(Map<String, Tropa> tropas) {
-        return getTotalTropas(tropas) == 0;
+    public boolean verificarCaptura() {
+        return getTotalTropas() == 0;
     }
 
     /** Métodos Auxiliares */
-    public Integer quantidadeTropasAtuais(Tropa key) {
+    public Integer quantidadeTropasAtuais(TipoTropa key) {
         return tropas.get(key);
     }
 
     /**
      * Reordena as tropas entre cavalaria e infantaria para melhor distribuição.
-     *
-     * @param tropas Todas as tropas do jogo.
      * */
-    public void reorganizarTropas(Map<String, Tropa> tropas) {
-        Integer totalTropas = getTotalTropas(tropas);
-        Tropa infantaria = tropas.get(TipoTropa.INFANTARIA.getNome());
-        Tropa cavalaria = tropas.get(TipoTropa.CAVALARIA.getNome());
+    public void reorganizarTropas() {
+        Integer totalTropas = getTotalTropas();
 
-        Integer quantidadeCavalaria = totalTropas / cavalaria.getValor();
-        Integer quantidadeInfantaria = totalTropas % cavalaria.getValor();
+        Integer quantidadeCavalaria = totalTropas / TipoTropa.CAVALARIA.getValor();
+        Integer quantidadeInfantaria = totalTropas % TipoTropa.CAVALARIA.getValor();
 
-        this.tropas.put(infantaria, quantidadeInfantaria);
-        this.tropas.put(cavalaria, quantidadeCavalaria);
+        this.tropas.put(TipoTropa.INFANTARIA, quantidadeInfantaria);
+        this.tropas.put(TipoTropa.CAVALARIA, quantidadeCavalaria);
     }
 
     /** Getters e Setters */
@@ -140,10 +121,6 @@ public class Territorio implements Serializable {
 
     public Territorios getNomeEnum() {
         return nome;
-    }
-
-    public void setNome(Territorios nome) {
-        this.nome = nome;
     }
 
     public Jogador getDono() {
@@ -158,15 +135,15 @@ public class Territorio implements Serializable {
         return vizinhos;
     }
 
-    public Map<Tropa, Integer> getTropas() {
+    public Map<TipoTropa, Integer> getTropas() {
         return tropas;
     }
 
-    public String exibirTropas(Map<String, Tropa> tropasJogo) {
+    public String exibirTropas(List<TipoTropa> tropasJogo) {
         String mensagem = "";
 
-        for (String s : tropasJogo.keySet()) {
-            mensagem = mensagem + "{" + s + "(" + tropas.get(tropasJogo.get(s)) + ")} ";
+        for (TipoTropa t : tropasJogo) {
+            mensagem = mensagem + "{" + t.getNome() + "(" + tropas.get(t) + ")} ";
         }
         return mensagem;
     }

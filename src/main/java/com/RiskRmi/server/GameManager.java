@@ -21,11 +21,11 @@ public class GameManager {
     private Stack<FasesJogo> fasesPorTurno;
     private List<Integer> ataquesResultados;
     private List<Integer> defesasResultados;
-    private Map<String, Tropa> tropas;
+    private List<TipoTropa> tropas;
     private List<TipoCarta> baralho;
     private int jogadorAtualIndex = 0;
     private final int TAMANHO_BARALHO;
-    private Dado dado;
+    private final Dado dado;
     private Boolean jogoIniciado = false;
     private final int QUANTIDADE_JOGADORES = 2;
     private final List<ClientCallback> clientes;
@@ -53,7 +53,7 @@ public class GameManager {
     /**
      * Remove um jogador da partida, mantém o cliente associado como listener para que ele continue
      * acompanhando a partida.
-     * @param jogador O jogador que foi derrotado.
+     * @param jogador O jogador derrotado.
      * @param mensagem Uma mensagem de fim de jogo para o jogador.
      * */
     public void removerJogadorCliente(Jogador jogador, String mensagem) throws RemoteException{
@@ -63,10 +63,10 @@ public class GameManager {
     }
 
     /**
-     * Atualiza a flag de sinalização de inicio do jogo quando a quantidade mínima de jogadores
-     * é antigida.
-     * Além disso, inicia o processo de criação do jogo através da chamada do metodo criarJogo() e
-     * incializa o jogo para cada cliente.
+     * Atualiza a ‘flag’ de sinalização de início do jogo quando a quantidade mínima de jogadores
+     * é atingida.
+     * Além disso, inicia o processo de criação do jogo através da chamada do método criarJogo() e
+     * inicializa o jogo para cada cliente.
      * */
     public void verificarInicioJogo() {
         if (this.jogadores.size() >= QUANTIDADE_JOGADORES && !jogoIniciado) {
@@ -102,7 +102,7 @@ public class GameManager {
      *******************************************************/
 
     /**
-     * Metodo principal de criação de jogo, faz todas as chamadas aos metodos de criação (tropas, territorios, etc);
+     * Método principal de criação de jogo, faz todas as chamadas aos métodos de criação (tropas, territorios, etc);
      * Também é responsável por distribuir os territórios entre os jogadores conectados e definir a quantidade de
      * tropas iniciais de cada um.
      * */
@@ -122,13 +122,13 @@ public class GameManager {
         }
         System.out.println("ID do Jogador Atual: " + jogadores.get(jogadorAtualIndex).getId());
 
-        /** Intanciar Validator */
-        this.validator = new Validate(tropas, territorios);
+        /** Instanciar Validator */
+        this.validator = new Validate();
     }
 
     /**
      * Cria todos os territórios do jogo, e os armazena em um hash map.
-     * Cada território pode ser acessado com uma String que indica seu nome.
+     * Cada território pode ser acessado com uma String que indica o seu nome.
      *
      * Também realiza a inicialização das tropas presentes em cada território.
      * */
@@ -177,7 +177,7 @@ public class GameManager {
     }
 
     /**
-     * Cria todos os contininentes do jogo.
+     * Cria todos os continentes do jogo.
      * Adiciona todos os continentes criados em um Array do jogo.
      * */
     public void criarContinentes() {
@@ -206,18 +206,17 @@ public class GameManager {
      * Cria todas as tropas e as adiciona em um hashMap do jogo.
      * */
     public void criarTropas() {
-        tropas = new HashMap<>();
-
-        tropas.put(TipoTropa.INFANTARIA.getNome(), new Tropa(TipoTropa.INFANTARIA, 1));
-        tropas.put(TipoTropa.CAVALARIA.getNome(), new Tropa(TipoTropa.CAVALARIA, 5));
+        tropas = new ArrayList<>();
+        tropas.add(TipoTropa.INFANTARIA);
+        tropas.add(TipoTropa.CAVALARIA);
     }
 
     /**
-     * Responsável por criar o baralho do jogo. Para isso, pega todos os tipos possiveis de cartas,
+     * Responsável por criar o baralho do jogo. Para isso, pega todos os tipos possíveis de cartas,
      * depois adiciona uma nova carta (os tipos são escolhidos de forma proporcional) ao deck de cartas
      * do jogo. A quantidade de cartas é definida pela constante TAMANHO_BARALHO.
      *
-     * No fim da distribuição, realiza o embaralhamento das cartas.
+     * No fim da distribuição, embaralha as cartas.
      * */
     public void criarBaralho() {
         baralho = new ArrayList<>();
@@ -239,10 +238,10 @@ public class GameManager {
      * Leva em consideração as seguintes condições de turno para o empilhamento:
      *
      * Se é o ínicio do jogo (todos os jogadores acabaram de se conectar), empilha a fase POSICIONAMENTO_INICIAL.
-     * Se acabou de sair da fase de posicionamento Incial, não existe bonificação de tropas, então empilha apenas ATAQUE E MOVIMENTAÇÃO
+     * Se acabou de sair da fase de posicionamento Inicial, não existe bonificação de tropas, então empilha apenas ATAQUE E MOVIMENTAÇÃO
      * Caso contrário, se trata de um turno normal, então empilha as fases de POSICIONAMENTO, ATAQUE e MOVIMENTAÇÃO.
      *
-     * Quando está em um turno comum, também aciona o calculo do bônus do jogador atual.
+     * Quando está em um turno comum, também aciona o cálculo do bônus do jogador atual.
      *
      * @param inicioJogo Flag que indica se é ou não inicio do jogo.
      * */
@@ -255,14 +254,14 @@ public class GameManager {
             fasesPorTurno.push(FasesJogo.ATAQUE);
             fasesPorTurno.push(FasesJogo.POSCIONAMENTO);
 
-            //Aciona o calculo de bonificação de inicio de turno do jogador atual.
+            //Aciona o cálculo de bonificação de início de turno do jogador atual.
             calcularBonificacao(jogadores.get(jogadorAtualIndex).getId());
         }
     }
 
     /**
      * Distribui os territórios do jogo entre todos os jogadores. A distribuição é feita de maneira proporcional
-     * ao número de jogadores e territórios, para que no inicio a quantidade de territórios de cada jogador
+     * ao número de jogadores e territórios, para que no início a quantidade de territórios de cada jogador
      * seja equilibrada.
      * */
     public void distribuirTerritorios() {
@@ -276,7 +275,7 @@ public class GameManager {
             Jogador jogador = jogadores.get(i % jogadores.size());
 
             t.setDono(jogador);
-            t.adicionarTropas(tropas, 1);
+            t.adicionarTropas(1);
             jogador.adicionarTerritorio(t);
 
             i++;
@@ -306,7 +305,7 @@ public class GameManager {
 
     /**
      * Posiciona uma determinada quantidade de tropas em um território.
-     * Só ocorre no inicio do jogo para a distribuição inicial das tropas recebidas pelos jogadores.
+     * Só ocorre no início do jogo para a distribuição inicial das tropas recebidas pelos jogadores.
      *
      * @param jogadorId O id do Jogador que quer realizar o posicionamento.
      * @param nomeTerritorio O territorio para adicionar tropas.
@@ -323,10 +322,10 @@ public class GameManager {
         validator.validarTerritorioJogador(territorio, jogador);
         validator.validarTropasDisponiveis(quantidadeTropas, jogador);
 
-        territorio.adicionarTropas(tropas, quantidadeTropas);
+        territorio.adicionarTropas(quantidadeTropas);
         jogador.setTropasDisponiveis(jogador.getTropasDisponiveis()-quantidadeTropas);
 
-        notificador.callback(clientes, notificador.tropasAdicionadas(jogador.getNome(), nomeTerritorio, territorio.getTotalTropas(tropas)));
+        notificador.callback(clientes, notificador.tropasAdicionadas(jogador.getNome(), nomeTerritorio, territorio.getTotalTropas()));
 
         if (jogador.getTropasDisponiveis() == 0) {
             if (ultimoDaRodada()) {
@@ -340,19 +339,19 @@ public class GameManager {
 
     /**
      * Busca os nomes de todos os territorios do jogador,
-     * juntamente com a quantidade total de cada tipo tropa presente no territorio.
+     * com a quantidade total de cada tipo tropa presente no territorio.
      *
      * @param jogadorId Jogador que realizou a requisição.
      * @return Uma lista com todos os nomes e tropas dos territorios.
      * */
     public List<String> buscarTerritoriosTropasJogador(int jogadorId) {
-        return jogadores.get(buscarPosicaoJogador(jogadorId)).buscarTerritoriosTropas(tropas);
+        return jogadores.get(buscarPosicaoJogador(jogadorId)).buscarTerritoriosTropas();
     }
 
     /**
-     * Busca a quantidade total de tropas que o jogador ainda tem disponivel para posicionamento inicial.
+     * Busca a quantidade total de tropas que o jogador ainda tem disponível para posicionamento inicial.
      * @param jogadorId Id do Jogador que realizou a requisição.
-     * @return A quantidade de tropas disponiveis.
+     * @return A quantidade de tropas disponíveis.
      * */
     public Integer buscarTropasDisponiveisJogador(int jogadorId) {
         return jogadores.get(buscarPosicaoJogador(jogadorId)).getTropasDisponiveis();
@@ -367,11 +366,11 @@ public class GameManager {
         validator.validarTerritorio(nomeTerritorio, territorios);
 
         Territorio territorio = territorios.get(nomeTerritorio);
-        return territorio.getTotalTropas(tropas);
+        return territorio.getTotalTropas();
     }
 
     /**
-     * Metodo que realiza todo o fluxo de ataque.
+     * Método que realiza todo o fluxo de ataque.
      * Realiza todas as devidas validações para integridade do jogo,
      * define com quantas tropas os jogadores irão atacar/defender com base na quantidade de tropas
      * nos respectivos territórios. Lança os dados de forma aleatória, realiza a comparação, e calcula a
@@ -428,20 +427,20 @@ public class GameManager {
 
         //Remove as tropas perdidas dos territórios
         if (perdasAtaque > 0) {
-            territorioOrigem.retirarTropas(tropas, perdasAtaque);
+            territorioOrigem.retirarTropas(perdasAtaque);
         }
         if (perdasDefesa > 0) {
-            territorioDestino.retirarTropas(tropas, perdasDefesa);
+            territorioDestino.retirarTropas(perdasDefesa);
         }
 
         /** Verifica se houve captura de território, se sim, altera o dono */
-        final boolean territorioCapturado = territorioDestino.verificarCaptura(tropas);
+        final boolean territorioCapturado = territorioDestino.verificarCaptura();
         String mensagem = "";
         if (territorioCapturado) {
             territorioDestino.setDono(jogador);
             jogadorAtacado.getTerritorios().remove(territorioDestino);
             jogador.getTerritorios().add(territorioDestino);
-            territorioDestino.adicionarTropas(tropas,tropasAtaque - perdasAtaque);
+            territorioDestino.adicionarTropas(tropasAtaque - perdasAtaque);
             //Com a conquista do território, o jogador ganha uma carta do baralho
             jogador.adicionarCarta(baralho.getFirst());
             baralho.removeFirst(); //Retira a carta do deck
@@ -548,12 +547,12 @@ public class GameManager {
         validator.validarQuantidadeTropas(quantidadeTropas, tOrigem);
 
         //realizar movimentação
-        tOrigem.retirarTropas(tropas, quantidadeTropas);
-        tDestino.adicionarTropas(tropas, quantidadeTropas);
+        tOrigem.retirarTropas(quantidadeTropas);
+        tDestino.adicionarTropas(quantidadeTropas);
 
-        tDestino.reorganizarTropas(tropas);
+        tDestino.reorganizarTropas();
 
-        notificador.callback(clientes, notificador.tropasMovimentadas(jogador.getNome(), origem, destino, tDestino.getTotalTropas(tropas)));
+        notificador.callback(clientes, notificador.tropasMovimentadas(jogador.getNome(), origem, destino, tDestino.getTotalTropas()));
         proximaFase(jogadorId);
     }
 
@@ -593,7 +592,7 @@ public class GameManager {
 
     /**
      * Passa a vez para o próximo jogador na fila.
-     * Caso seja o ultimo jogador, retorna para o primeiro da fila.
+     * Caso seja o último jogador, retorna para o primeiro da fila.
      * Sempre reinicia a pilha de fases para cada novo jogador.
      *
      * @param jogadorId O id do jogador que realizou a requisição direta ou indiretamente
@@ -629,12 +628,12 @@ public class GameManager {
         validator.validarTerritorioJogador(territorio, jogador);
         validator.validarTropasDisponiveis(quantidadeTropas, jogador);
 
-        territorio.adicionarTropas(tropas, quantidadeTropas);
+        territorio.adicionarTropas(quantidadeTropas);
         jogador.setTropasDisponiveis(jogador.getTropasDisponiveis()-quantidadeTropas);
 
-        territorio.reorganizarTropas(tropas);
+        territorio.reorganizarTropas();
 
-        notificador.callback(clientes, notificador.tropasAdicionadas(jogador.getNome(), territorioNome, territorio.getTotalTropas(tropas)));
+        notificador.callback(clientes, notificador.tropasAdicionadas(jogador.getNome(), territorioNome, territorio.getTotalTropas()));
     }
 
     /**
@@ -704,7 +703,7 @@ public class GameManager {
     }
 
     /**
-     * Verifica se já está no ultimo jogador da fila.
+     * Verifica se já está no último jogador da fila.
      * @return true se for o último jogador, false caso contrário.
      * */
     public boolean ultimoDaRodada() {
@@ -720,7 +719,7 @@ public class GameManager {
      * @return A quantidade máxima de tropas de ataque.
      * */
     public int calcularTropasAtaque(Territorio territorio) {
-        int totalTropas = territorio.getTotalTropas(tropas);
+        int totalTropas = territorio.getTotalTropas();
 
         if (totalTropas > 3) return 3;
         if (totalTropas == 3) return 2;
@@ -736,7 +735,7 @@ public class GameManager {
      * @return A quantidade máxima de tropas.
      * */
     public int calcularTropasDefesa(Territorio territorio) {
-        int totalTropas = territorio.getTotalTropas(tropas);
+        int totalTropas = territorio.getTotalTropas();
 
         if (totalTropas >= 2) return 2;
         return 1;
@@ -799,7 +798,7 @@ public class GameManager {
                 """;
 
         for (Jogador j : jogadores) {
-            mensagem = mensagem + "Nome: " + j.getNome() + " | Quantidade Territórios: " + j.getTerritorios().size() + " | Total Tropas: " + j.buscarTotalTropasJogador(tropas) + " | Tropas: \n" + j.buscarTerritoriosTropas(tropas) + "\n\n";
+            mensagem = mensagem + "Nome: " + j.getNome() + " | Quantidade Territórios: " + j.getTerritorios().size() + " | Total Tropas: " + j.buscarTotalTropasJogador() + " | Tropas: \n" + j.buscarTerritoriosTropas() + "\n\n";
         }
 
         mensagem = mensagem + """

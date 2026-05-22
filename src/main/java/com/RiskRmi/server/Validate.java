@@ -5,7 +5,6 @@ import com.RiskRmi.enums.Territorios;
 import com.RiskRmi.exceptions.InvalidActionException;
 import com.RiskRmi.model.Jogador;
 import com.RiskRmi.model.Territorio;
-import com.RiskRmi.model.Tropa;
 
 import java.util.List;
 import java.util.Map;
@@ -14,12 +13,7 @@ import java.util.Stack;
 
 public class Validate {
 
-    private Map<String, Tropa> tropas;
-    private Map<String, Territorio> territorios;
-
-    public Validate(Map<String, Tropa> tropas, Map<String, Territorio> territorios) {
-        this.tropas = tropas;
-        this.territorios = territorios;
+    public Validate() {
     }
 
     public void validarTurnoJogador(List<Jogador> jogadores, int jogadorId, int indexAtual) {
@@ -68,13 +62,13 @@ public class Validate {
 
     public void validarQuantidadeTropas(Territorio territorio) {
         /** O ataque não pode ocorrer de um território que possui apenas 1 tropa. */
-        if (territorio.getTotalTropas(tropas) == 1) {
+        if (territorio.getTotalTropas() == 1) {
             throw new InvalidActionException("Território só possui 1 tropa.");
         }
     }
 
     public void validarQuantidadeTropas(Integer quantidadeTropas, Territorio territorio) {
-        final Integer totalTropas = territorio.getTotalTropas(tropas);
+        final Integer totalTropas = territorio.getTotalTropas();
         if (totalTropas == 1) {
             throw new InvalidActionException("Território só possui 1 tropa.");
         }

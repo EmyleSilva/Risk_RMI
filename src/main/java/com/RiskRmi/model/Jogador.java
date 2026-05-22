@@ -71,7 +71,7 @@ public class Jogador implements Serializable {
     /**
      * Remove 3 cartas da mão do jogador e as adiciona novamente no baralho do jogo.
      * @param tipo O tipo de carta que está sendo removida.
-     *  cartasJogo Os tipos de carta que estão no jogo.
+     *  cartasJogo Os tipos de carta no jogo.
      * @param baralho O baralho do jogo.
      * */
     public void removerCartas(TipoCarta tipo, List<TipoCarta> baralho) {
@@ -94,25 +94,23 @@ public class Jogador implements Serializable {
     }
 
     /**
-     * Busca uma lista de territorios juntamente com as tropas (de diferentes tipos) pertencentes a ele.
-     * @param tropasJogo Tropas do Jogo.
-     * @return Uma lista de territorios e suas tropas.
+     * Busca uma lista de territorios com as tropas (de diferentes tipos) pertencentes a ele.
+     *
+     * @return Uma lista de territorios e as suas tropas.
      * */
-    public List<String> buscarTerritoriosTropas(Map<String, Tropa> tropasJogo) {
+    public List<String> buscarTerritoriosTropas() {
         List<String> territoriosTropas = new ArrayList<>();
-        Tropa infantaria = tropasJogo.get(TipoTropa.INFANTARIA.getNome());
-        Tropa cavalaria = tropasJogo.get(TipoTropa.CAVALARIA.getNome());
 
         for (Territorio t : territorios) {
-            Integer i = t.getTropas().get(infantaria);
-            Integer c = t.getTropas().get(cavalaria);
+            Integer i = t.getTropas().get(TipoTropa.INFANTARIA);
+            Integer c = t.getTropas().get(TipoTropa.CAVALARIA);
             territoriosTropas.add(t.getNome() + "{infantaria(" + i + ") cavalaria(" + c + ")}");
         }
 
         return territoriosTropas;
     }
 
-    /** Metódos para o jogo */
+    /** Métodos para o jogo */
 
     /**
      * Adiciona um território na lista de territórios.
@@ -136,15 +134,12 @@ public class Jogador implements Serializable {
         return cartas;
     }
 
-    public Integer buscarTotalTropasJogador(Map<String, Tropa> tropasJogo) {
+    public Integer buscarTotalTropasJogador() {
         Integer quantidade = 0;
 
-        Tropa infantaria = tropasJogo.get(TipoTropa.INFANTARIA.getNome());
-        Tropa cavalaria = tropasJogo.get(TipoTropa.CAVALARIA.getNome());
-
         for (Territorio t : territorios) {
-            quantidade += t.getTropas().get(infantaria);
-            quantidade += t.getTropas().get(cavalaria) * cavalaria.getValor();
+            quantidade += t.getTropas().get(TipoTropa.INFANTARIA);
+            quantidade += t.getTropas().get(TipoTropa.CAVALARIA) * TipoTropa.CAVALARIA.getValor();
         }
 
         return quantidade;
@@ -154,10 +149,6 @@ public class Jogador implements Serializable {
     /** Getters e Setters */
     public String getNome() {
         return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public int getId() {
