@@ -157,7 +157,7 @@ O jogo inicia automáticamente quando a quantidade de jogadores definida é atin
 > Onde:
 >
 > - `192.168.0.15` → IP da máquina que está executando o cliente.
->
+
 > [!NOTE]
 > Se o projeto estiver sendo executado através de uma IDE, o IP do cliente também pode ser informado pelos argumentos de execução da aplicação.
 >
