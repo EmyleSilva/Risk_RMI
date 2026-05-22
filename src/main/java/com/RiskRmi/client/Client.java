@@ -23,6 +23,13 @@ public class Client {
 
     public static void main(String[] args) {
         try {
+            String ip_client = args[0];
+
+            System.setProperty(
+              "java.rmi.server.hostname",
+              ip_client
+            );
+
             System.out.println("============================ RISK GAME - ONE PIECE ============================");
             System.out.println("Bem Vindo ao Risk! Digite um username para se juntar a partida: ");
             nomeJogador = input.nextLine();

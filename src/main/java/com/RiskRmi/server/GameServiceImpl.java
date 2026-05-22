@@ -21,7 +21,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
     private final List<ClientCallback> clientes;
 
     protected GameServiceImpl() throws RemoteException {
-        super();
+        super(5000);
         clientes = new ArrayList<>();
         manager = new GameManager(30, clientes);
     }
@@ -131,8 +131,6 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
             Registry registry = LocateRegistry.createRegistry(1099);
 
             GameServiceImpl risk = new GameServiceImpl();
-//            String name = "rmi://192.168.15.10:1099/risk";
-//            Naming.rebind(name, risk);
             registry.rebind("risk", risk);
 
             System.out.println("Servidor Iniciado.......");
