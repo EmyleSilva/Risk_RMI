@@ -138,8 +138,44 @@ O jogo inicia automáticamente quando a quantidade de jogadores definida é atin
     - Compile o projeto pela sua IDE.
     - Para executar:
         - Inicie o servidor executando server/GameServiceImpl.java.
-        - Em seguida, inicie um cliente executando client/Client.java para cada jogador.
+        - Em seguida, inicie um cliente executando client/Client.java para cada jogador. 
         - O jogo começa automaticamente ao atingir o número mínimo de jogadores.
+
+> [!IMPORTANT]
+> Para que o sistema funcione corretamente em rede:
+>
+> - O IP da máquina que executa o servidor deve ser definido através da constante `IP_SERVIDOR` na classe do servidor: server/GameServiceImpl.java.
+>
+> - Ao executar o cliente, é necessário informar como argumento o IP da máquina do próprio cliente, pois ele é utilizado pelo RMI Callback para que o servidor consiga se conectar de volta ao cliente.
+>
+> Exemplo de passagem do IP como argumento no cliente:
+>
+> ```bash
+> java Client 192.168.0.15
+> ```
+>
+> Onde:
+>
+> - `192.168.0.15` → IP da máquina que está executando o cliente.
+>
+> [!NOTE]
+> Se o projeto estiver sendo executado através de uma IDE, o IP do cliente também pode ser informado pelos argumentos de execução da aplicação.
+>
+> No IntelliJ IDEA:
+>
+> 1. Abra:
+>
+>    `Run → Edit Configurations`
+>
+> 2. Selecione a classe principal do cliente.
+>
+> 3. No campo `Program arguments`, informe o IP da máquina cliente.
+>
+> Exemplo:
+>
+> ```txt
+> 192.168.0.15
+> ```
 
 ## 🔧 Detalhes Técnicos do Jogo
 

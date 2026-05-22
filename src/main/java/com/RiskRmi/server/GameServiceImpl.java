@@ -17,6 +17,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
 
     private final GameManager manager;
     private final List<ClientCallback> clientes;
+    private final static String IP_SERVIDOR = "";
 
     protected GameServiceImpl() throws RemoteException {
         super(5000);
@@ -120,7 +121,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
              * */
             System.setProperty(
                     "java.rmi.server.hostname",
-                    "192.168.15.10"
+                    IP_SERVIDOR
             );
 
             /**
