@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,10 +116,23 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
 
     public static void main(String[] args) {
         try {
-            LocateRegistry.createRegistry(1099);
+            /**
+             * Configura a propriedade rmi.server.hostname
+             * Define o IP que será anunciado para o cliente.
+             * */
+            System.setProperty(
+                    "java.rmi.server.hostname",
+                    "192.168.15.10"
+            );
+
+            /**
+             * Cria o Registry na porta 1099
+             * */
+            Registry registry = LocateRegistry.createRegistry(1099);
+//            LocateRegistry.createRegistry(1099);
 
             GameServiceImpl risk = new GameServiceImpl();
-            String name = "rmi://localhost/risk";
+            String name = "rmi://192.168.15.10:1099/risk";
             Naming.rebind(name, risk);
             System.out.println("Servidor Iniciado.......");
 

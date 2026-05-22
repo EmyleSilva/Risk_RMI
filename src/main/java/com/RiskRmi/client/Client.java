@@ -14,7 +14,7 @@ public class Client {
     static Scanner input = new Scanner(System.in);
 
     static String nomeJogador = "";
-    static String name = "rmi://localhost/risk";
+    static String name = "rmi://192.168.15.10:1099/risk";
     static GameService risk = null;
     static int jogadorId;
     static UserCLI user;
