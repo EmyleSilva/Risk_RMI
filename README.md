@@ -144,7 +144,7 @@ O jogo inicia automáticamente quando a quantidade de jogadores definida é atin
 > [!IMPORTANT]
 > Para que o sistema funcione corretamente em rede:
 >
-> - O IP da máquina que executa o servidor deve ser definido através da constante `IP_SERVIDOR` na classe do servidor: server/GameServiceImpl.java.
+> - O IP da máquina que executa o servidor deve ser definido através da constante `IP_SERVIDOR` na classe do servidor: server/GameServiceImpl.java e na classe do cliente: client/Client.java.
 >
 > - Ao executar o cliente, é necessário informar como argumento o IP da máquina do próprio cliente, pois ele é utilizado pelo RMI Callback para que o servidor consiga se conectar de volta ao cliente.
 >
@@ -185,11 +185,18 @@ A classe `server/GameServiceImpl.java` implementa os métodos definidos em GameS
 
 Inicialização do servidor:
 ```java
-LocateRegistry.createRegistry(1099);
+System.setProperty(
+    "java.rmi.server.hostname",
+    IP_SERVIDOR
+);
 
-GameServiceImpl risk = new GameServiceImpl();
-String name = "rmi://localhost/risk";
-Naming.rebind(name, risk);
+Registry registry =
+    LocateRegistry.createRegistry(1099);
+
+GameServiceImpl risk =
+    new GameServiceImpl();
+
+registry.rebind("risk", risk);
 ```
 
 No cliente:
@@ -201,12 +208,33 @@ static GameService risk = null;
 risk = (GameService) Naming.lookup(name);
 ```
 
+```java
+System.setProperty(
+    "java.rmi.server.hostname",
+    ip_client
+);
+
+Registry registry =
+    LocateRegistry.getRegistry(
+        IP_SERVIDOR,
+        1099
+    );
+
+risk = (GameService)
+    registry.lookup("risk");
+```
+
 O cliente também implementa métodos remotos para callback, funcionando como um listener no servidor.
 
 ```java
-ClientCallback callback = new ClientCallbackImpl(user);
+ClientCallback callback =
+    new ClientCallbackImpl(user);
 
-jogadorId = risk.registrarJogador(nomeJogador, callback);
+jogadorId =
+    risk.registrarJogador(
+        nomeJogador,
+        callback
+    );
 ```
 
 No servidor:

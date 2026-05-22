@@ -17,6 +17,7 @@ public class Client {
     static GameService risk = null;
     static int jogadorId;
     static UserCLI user;
+    static final String IP_SERVIDOR = "";
 
     public static void main(String[] args) {
         try {
@@ -41,7 +42,7 @@ public class Client {
 
             /** Se conecta ao registry do servidor * */
             Registry registry = LocateRegistry.getRegistry(
-                    "192.168.15.10",
+                    IP_SERVIDOR,
                     1099
             );
 
