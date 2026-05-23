@@ -17,12 +17,18 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
 
     private final GameManager manager;
     private final List<ClientCallback> clientes;
-    private final static String IP_SERVIDOR = "192.168.15.10";
+    private final static String IP_SERVIDOR = "127.0.0.1";
+    private int proximaPorta = 6000;
 
     protected GameServiceImpl() throws RemoteException {
         super(5000);
         clientes = new ArrayList<>();
         manager = new GameManager(30, clientes);
+    }
+
+    @Override
+    public int solicitarPortaCallback() throws RemoteException {
+        return proximaPorta++;
     }
 
     @Override

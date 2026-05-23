@@ -17,7 +17,7 @@ public class Client {
     static GameService risk = null;
     static int jogadorId;
     static UserCLI user;
-    static final String IP_SERVIDOR = "192.168.15.10";
+    static final String IP_SERVIDOR = "127.0.0.1";
 
     public static void main(String[] args) {
         try {
@@ -50,8 +50,10 @@ public class Client {
             risk = (GameService) registry.lookup("risk");
             user = new UserCLI(risk);
 
+            int port = risk.solicitarPortaCallback();
+
             /** Cria um objeto de callback*/
-            ClientCallback callback = new ClientCallbackImpl(user);
+            ClientCallback callback = new ClientCallbackImpl(user, port);
 
             /** Registra um novo jogador juntamente com o objeto de callback para o servidor*/
             jogadorId = risk.registrarJogador(nomeJogador, callback);

@@ -137,8 +137,8 @@ O jogo inicia automáticamente quando a quantidade de jogadores definida é atin
 
     - Compile o projeto pela sua IDE.
     - Para executar:
-        - Inicie o servidor executando server/GameServiceImpl.java.
-        - Em seguida, inicie um cliente executando client/Client.java para cada jogador. 
+        - Inicie o servidor executando a classe principal (main) em server/GameServiceImpl.java.
+        - Em seguida, inicie um cliente executando a classe principal (main) em client/Client.java para cada jogador. 
         - O jogo começa automaticamente ao atingir o número mínimo de jogadores.
 
 > [!IMPORTANT]
@@ -200,13 +200,6 @@ registry.rebind("risk", risk);
 ```
 
 No cliente:
-
-```java
-static String name = "rmi://localhost/risk";
-static GameService risk = null;
-
-risk = (GameService) Naming.lookup(name);
-```
 
 ```java
 System.setProperty(

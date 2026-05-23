@@ -136,4 +136,14 @@ public interface GameService extends Remote {
      * @return Uma lista de Strings com os nomes dos territórios.
      * */
     List<String> buscarTerritoriosInimigos(int jogadorId) throws RemoteException, InvalidActionException;
+
+    /**
+     * Retorna uma porta disponível para que o cliente
+     * possa exportar seu objeto de callback RMI.
+     * A porta retornada será utilizada pelo cliente
+     * ao instanciar o objeto remoto de callback.
+     *
+     * @return A próxima porta disponível para callback.
+     */
+    int solicitarPortaCallback() throws RemoteException;
 }
