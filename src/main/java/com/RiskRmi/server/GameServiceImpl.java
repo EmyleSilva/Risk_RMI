@@ -17,7 +17,7 @@ public class GameServiceImpl extends UnicastRemoteObject implements GameService 
 
     private final GameManager manager;
     private final List<ClientCallback> clientes;
-    private final static String IP_SERVIDOR = "";
+    private final static String IP_SERVIDOR = "192.168.15.10";
 
     protected GameServiceImpl() throws RemoteException {
         super(5000);

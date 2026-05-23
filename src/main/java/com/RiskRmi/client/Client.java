@@ -17,7 +17,7 @@ public class Client {
     static GameService risk = null;
     static int jogadorId;
     static UserCLI user;
-    static final String IP_SERVIDOR = "";
+    static final String IP_SERVIDOR = "192.168.15.10";
 
     public static void main(String[] args) {
         try {
