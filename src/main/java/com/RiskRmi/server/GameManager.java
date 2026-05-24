@@ -441,6 +441,7 @@ public class GameManager {
             jogadorAtacado.getTerritorios().remove(territorioDestino);
             jogador.getTerritorios().add(territorioDestino);
             territorioDestino.adicionarTropas(tropasAtaque - perdasAtaque);
+            territorioOrigem.retirarTropas(tropasAtaque - perdasAtaque);
             //Com a conquista do território, o jogador ganha uma carta do baralho
             jogador.adicionarCarta(baralho.getFirst());
             baralho.removeFirst(); //Retira a carta do deck
